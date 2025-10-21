@@ -1,4 +1,4 @@
-[//]: # (<p align="center">)
+\usepackage{ulem}[//]: # (<p align="center">)
 
 [//]: # (<img width="300" src="https://raw.githubusercontent.com/Raminghorbanii/DQE/master/docs/DQE_logo.png"/>)
 
@@ -88,7 +88,7 @@ For researchers interested in reproducing the experiments or exploring the evalu
 To use DQE, start by creating and activating a new Conda environment using the following commands:
 
 ```bash
-conda create --name dqe_env python=3.8
+conda create --name dqe_env python=3.9
 conda activate dqe_env
 ```
 
