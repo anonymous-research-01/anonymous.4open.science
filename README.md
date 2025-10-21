@@ -1,6 +1,6 @@
 [//]: # (<p align="center">)
 
-[//]: # (<img width="300" src="https://raw.githubusercontent.com/Raminghorbanii/PATE/master/docs/PATE_logo.png"/>)
+[//]: # (<img width="300" src="https://raw.githubusercontent.com/Raminghorbanii/DQE/master/docs/DQE_logo.png"/>)
 
 [//]: # (</p>)
 
@@ -32,95 +32,66 @@ discriminative evaluations through experiments with both synthetic and real-worl
 
 [//]: # (## Quick Start)
 
-[//]: # ()
-[//]: # (### Installation)
+### Installation
+Install DQE for immediate use in your projects:
 
-[//]: # (Install PATE for immediate use in your projects:)
+```bash
+pip install requirements.txt
+```
 
-[//]: # ()
-[//]: # (```bash)
+## How to use DQE? 
 
-[//]: # (pip install PATE)
+Begin by importing the DQE module in your Python script:
 
-[//]: # (```)
 
-[//]: # ()
-[//]: # (## How to use PATE? )
+```bash
+from meata import meata_auc_pr
+from config.meata_config import parameter_dict
 
-[//]: # (Utilizing PATE is straightforward. Begin by importing the PATE module in your Python script:)
+```
 
-[//]: # ()
-[//]: # (```bash)
+Prepare your input as arrays of anomaly scores (continues or binary) and binary labels. DQE allows for comprehensive customization of parameters. 
 
-[//]: # (from pate.PATE_metric import PATE)
+Please refer to the main code documentation for a full list of configurable options.
 
-[//]: # (```)
+Example usage of DQE:
 
-[//]: # ()
-[//]: # (Prepare your input as arrays of anomaly scores &#40;continues or binary&#41; and binary labels. PATE allows for comprehensive customization of parameters, enabling easy toggling between PATE and PATE-F1 evaluations. Please refer to the main code documentation for a full list of configurable options.)
+```bash
+    final_dqe, dqe, dqe_w_gt, dqe_w_near_ngt, dqe_w_distant_ngt, dqe_w_ngt = meata_auc_pr(labels,output=pred,parameter_dict=parameter_dict,cal_mode="proportion")
+```
 
-[//]: # ()
-[//]: # (Example usage of PATE and PATE-F1:)
+### Basic Example
 
-[//]: # ()
-[//]: # (```bash)
+```python 
+import numpy as np
+from meata import meata_auc_pr
+from config.meata_config import parameter_dict
 
-[//]: # (pate = PATE&#40;labels, anomaly_scores, binary_scores = False&#41;)
+# Example data setup
+labels = np.array([0, 1, 0, 1, 0])
+scores = np.array([0.1, 0.8, 0.1, 0.9, 0.2])
 
-[//]: # (pate_f1 = PATE&#40;labels, binary_anomaly_scores, binary_scores = True&#41;)
+# Compute DQE
 
-[//]: # (```)
+final_dqe, dqe, dqe_w_gt, dqe_w_near_ngt, dqe_w_distant_ngt, dqe_w_ngt = meata_auc_pr(labels,output=scores,parameter_dict=parameter_dict,cal_mode="proportion")
 
-[//]: # ()
-[//]: # (### Basic Example)
+print(dqe)
+```
 
-[//]: # ()
-[//]: # (```python )
+---
 
-[//]: # (import numpy as np)
+## Advanced Setup and Experiments
+For researchers interested in reproducing the experiments or exploring the evaluation metric further with various data sets:
 
-[//]: # (from pate.PATE_metric import PATE)
 
-[//]: # ()
-[//]: # (# Example data setup)
+### Environment Setup
+To use DQE, start by creating and activating a new Conda environment using the following commands:
 
-[//]: # (labels = np.array&#40;[0, 1, 0, 1, 0]&#41;)
+```bash
+conda create --name dqe_env python=3.8
+conda activate dqe_env
+```
 
-[//]: # (scores = np.array&#40;[0.1, 0.8, 0.1, 0.9, 0.2]&#41;)
-
-[//]: # ()
-[//]: # (# Initialize PATE and compute the metric)
-
-[//]: # (pate = PATE&#40;labels, scores, binary_scores = False&#41;)
-
-[//]: # (print&#40;pate&#41;)
-
-[//]: # (```)
-
-[//]: # ()
-[//]: # (---)
-
-[//]: # ()
-[//]: # (## Advanced Setup and Experiments)
-
-[//]: # (For researchers interested in reproducing the experiments or exploring the evaluation metric further with various data sets:)
-
-[//]: # ()
-[//]: # ()
-[//]: # (### Environment Setup)
-
-[//]: # (To use PATE, start by creating and activating a new Conda environment using the following commands:)
-
-[//]: # ()
-[//]: # (```bash)
-
-[//]: # (conda create --name pate_env python=3.8)
-
-[//]: # (conda activate pate_env)
-
-[//]: # (```)
-
-[//]: # ()
 [//]: # (### Install Dependencies)
 
 [//]: # (Install the required Python packages via:)
@@ -128,39 +99,28 @@ discriminative evaluations through experiments with both synthetic and real-worl
 [//]: # ()
 [//]: # (```bash)
 
-[//]: # (git clone https://github.com/raminghorbanii/PATE)
+[//]: # (git clone https://github.com/raminghorbanii/DQE)
 
-[//]: # (cd PATE)
+[//]: # (cd DQE)
 
 [//]: # (pip install -r synthetic_exp_requirements.txt)
 
 [//]: # (```)
 
-[//]: # ()
-[//]: # (## Conducting Experiments)
+## Conducting Experiments
 
-[//]: # ()
-[//]: # (### with Synthetic Data)
+### with Synthetic Data
 
-[//]: # ()
-[//]: # (To run experiments on synthetic data, navigate to the experiments/Synthetic_Data_Experiments directory and execute the main Python script.)
+To run experiments on synthetic data, execute the Python script main_synthetic_data_exp.py.
+This script allows for the modification of various scenarios, comparing DQE against other established metrics.
 
-[//]: # (This script allows for the modification of various scenarios, comparing PATE and PATE-F1 against other established metrics.)
 
-[//]: # ()
-[//]: # ()
-[//]: # (```bash)
+```bash
+python main_synthetic_data_exp.py
+```
 
-[//]: # (cd experiments/Synthetic_Data_Experiments)
+[//]: # (Example of how you use DQE using synthetic data &#40;Binary detector&#41;:)
 
-[//]: # (python main_synthetic_data.py)
-
-[//]: # (```)
-
-[//]: # ()
-[//]: # (Example of how you use PATE using synthetic data &#40;Binary detector&#41;:)
-
-[//]: # ()
 [//]: # (```python)
 
 [//]: # ()
@@ -190,8 +150,7 @@ discriminative evaluations through experiments with both synthetic and real-worl
 [//]: # ()
 [//]: # (```)
 
-[//]: # ()
-[//]: # ()
+
 [//]: # (```bash)
 
 [//]: # ()
@@ -233,14 +192,13 @@ discriminative evaluations through experiments with both synthetic and real-worl
 [//]: # ('AUC_PR': 0.51,)
 
 [//]: # ()
-[//]: # ('PATE': 0.76,)
+[//]: # ('DQE': 0.76,)
 
-[//]: # ('PATE-F1': 0.75})
+[//]: # ('DQE-F1': 0.75})
 
 [//]: # ()
 [//]: # (```)
 
-[//]: # ()
 [//]: # (### with Real-World Data)
 
 [//]: # (For real-world data experiments, ensure all additional required packages are installed.)
@@ -252,67 +210,65 @@ discriminative evaluations through experiments with both synthetic and real-worl
 
 [//]: # (```)
 
-[//]: # ()
-[//]: # (#### Download the Dataset)
+#### Download the Dataset
+The real-world datasets for experiments can be downloaded from the following link:
 
-[//]: # (The datasets for these experiments can be downloaded from the following link:)
+Dataset Link: https://www.thedatum.org/datasets/TSB-AD-U.zip 
 
-[//]: # ()
-[//]: # (Dataset Link: https://www.thedatum.org/datasets/TSB-UAD-Public.zip )
+Ref: This dataset is made available through the GitHub page of the project "The Elephant in the Room: Towards A Reliable Time-Series Anomaly Detection Benchmark (TSB-AD)": https://github.com/TheDatumOrg/TSB-AD
 
-[//]: # ()
-[//]: # (Ref: This dataset is made available through the GitHub page of the project "An End-to-End Benchmark Suite for Univariate Time-Series Anomaly Detection &#40;TSB-UAD&#41;": https://github.com/TheDatumOrg/TSB-UAD)
+#### Running the Experiments
 
-[//]: # ()
-[//]: # (#### Running the Experiments)
+After downloading, place the unzipped dataset in the same directory. If you store the data in a different location, ensure you update the directory paths in the code to match.
 
-[//]: # ()
-[//]: # (After downloading, place the unzipped dataset in the same directory. If you store the data in a different location, ensure you update the directory paths in the code to match.)
+[//]: # (Navigate to the experiments/RealWorld_Data_Experiments directory to run an experiment. )
 
-[//]: # ()
-[//]: # (Navigate to the experiments/RealWorld_Data_Experiments directory to run an experiment. Execute one of the example Python scripts by entering the following command:)
+[//]: # (Navigate to the experiments/RealWorld_Data_Experiments directory to run an experiment. )
+Execute the Python script real_data_exp_case.py for producing case results in paper by entering the following command:)
 
-[//]: # ()
-[//]: # (```bash)
+[//]: # (Execute one of the example Python scripts by entering the following command:)
 
-[//]: # (cd experiments/RealWorld_Data_Experiments)
+```bash
+python real_data_exp_case.py
+```
 
-[//]: # (python Example1.py)
+Execute the Python script real_data_exp_all_dataset.py for producing average results in paper:
 
-[//]: # (```)
+
+```bash
+python real_data_exp_all_dataset.py
+```
 
 [//]: # (Two different examples are provided. These examples allow for modifications and customizations, enabling detailed exploration of various data aspects.)
 
-[//]: # ()
-[//]: # ()
+
 [//]: # (---)
 
 [//]: # ()
-[//]: # (## Setting Buffer Size in PATE)
+[//]: # (## Setting Buffer Size in DQE)
 
 [//]: # ()
-[//]: # (Given the context of time series data, selecting a buffer size for a fair evaluation of anomaly detectors' performance is unavoidable. The buffer parameter of PATE can be set using the following strategies:)
+[//]: # (Given the context of time series data, selecting a buffer size for a fair evaluation of anomaly detectors' performance is unavoidable. The buffer parameter of DQE can be set using the following strategies:)
 
 [//]: # ()
 [//]: # (- *Expert Knowledge*: Best suited for customized, specific, and real-world applications where expert knowledge is available, or when one has enough experience with the data at hand. Experts can directly specify buffer sizes that are optimized for the particular use case.)
 
 [//]: # ()
-[//]: # (- *ACF Analysis*: Automatically determines the optimal buffer size by analyzing the autocorrelation within the data. This function is available in PATE_utils.py.)
+[//]: # (- *ACF Analysis*: Automatically determines the optimal buffer size by analyzing the autocorrelation within the data. This function is available in DQE_utils.py.)
 
 [//]: # ()
-[//]: # (- *Range of Buffer Sizes*: PATE is flexible and can evaluate performance across all combinations of pre and post buffer sizes, allowing for a comprehensive assessment without expert input. One can start with a maximum buffer size, and PATE automatically divides it into a specified number of ranges &#40;determined by the user&#41;.)
+[//]: # (- *Range of Buffer Sizes*: DQE is flexible and can evaluate performance across all combinations of pre and post buffer sizes, allowing for a comprehensive assessment without expert input. One can start with a maximum buffer size, and DQE automatically divides it into a specified number of ranges &#40;determined by the user&#41;.)
 
 [//]: # ()
 [//]: # (- *Default Setting*: Utilizes the input window size of the anomaly detector, a standard, practical buffer size that aligns with the general scale of the data being analyzed. This option is useful when no specific adjustments are needed or when minimal configuration is desired.)
 
 [//]: # ()
-[//]: # (This guidance ensures that you can effectively implement these buffer size selection strategies in PATE for optimal results.)
+[//]: # (This guidance ensures that you can effectively implement these buffer size selection strategies in DQE for optimal results.)
 
 [//]: # ()
 [//]: # ()
 [//]: # (---)
 
-[//]: # ()
 [//]: # (## Citation)
 
 [//]: # (If you find our work is useful in your research, please consider raising a star  :star:  and citing:)
@@ -320,9 +276,9 @@ discriminative evaluations through experiments with both synthetic and real-worl
 [//]: # ()
 [//]: # (```)
 
-[//]: # (@article{ghorbani2024pate,)
+[//]: # (@article{ghorbani2024DQE,)
 
-[//]: # (  title={PATE: Proximity-Aware Time series anomaly Evaluation},)
+[//]: # (  title={DQE: Proximity-Aware Time series anomaly Evaluation},)
 
 [//]: # (  author={Ghorbani, Ramin and Reinders, Marcel JT and Tax, David MJ},)
 
@@ -334,4 +290,3 @@ discriminative evaluations through experiments with both synthetic and real-worl
 
 [//]: # (```)
 
-[//]: # ()
