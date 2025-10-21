@@ -89,7 +89,6 @@ To use DQE, start by creating and activating a new Conda environment using the f
 
 ```bash
 conda create --name dqe_env python=3.9
-conda create --name dqe_env python=3.9
 conda activate dqe_env
 ```
 
