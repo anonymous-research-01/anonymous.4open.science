@@ -80,7 +80,7 @@ print(dqe)
 
 ---
 
-## Advanced Setup and Experiments
+## Experiments
 For researchers interested in reproducing the experiments or exploring the evaluation metric further with various data sets:
 
 
@@ -199,7 +199,7 @@ python main_synthetic_data_exp.py
 [//]: # ()
 [//]: # (```)
 
-[//]: # (### with Real-World Data)
+### with Real-World Data
 
 [//]: # (For real-world data experiments, ensure all additional required packages are installed.)
 
