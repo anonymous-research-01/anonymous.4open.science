@@ -1,4 +1,4 @@
-\usepackage{ulem}[//]: # (<p align="center">)
+[//]: # (\usepackage{ulem}[//]: # &#40;<p align="center">&#41;)
 
 [//]: # (<img width="300" src="https://raw.githubusercontent.com/Raminghorbanii/DQE/master/docs/DQE_logo.png"/>)
 
