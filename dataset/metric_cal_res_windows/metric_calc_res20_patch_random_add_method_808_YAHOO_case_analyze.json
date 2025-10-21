@@ -1,0 +1,20 @@
+{
+    "808_YAHOO_id_258_WebService_tr_500_1st_142_name_list.json": {
+        "SR": {
+            "final_meata": 0,
+            "meata": 0.6324903401211948,
+            "meata_w_gt": 0.38507651607133964,
+            "meata_w_near_ngt": 0.7085243331128749,
+            "meata_w_distant_ngt": 0.8038701711793699,
+            "meata_w_ngt": 0.7561972521461224
+        },
+        "KMeansAD_U": {
+            "final_meata": 0,
+            "meata": 0.46979032129988185,
+            "meata_w_gt": 0.3954265739446107,
+            "meata_w_near_ngt": 0.3062549430941358,
+            "meata_w_distant_ngt": 0.707689446860899,
+            "meata_w_ngt": 0.5069721949775174
+        }
+    }
+}
