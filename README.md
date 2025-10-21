@@ -89,6 +89,7 @@ To use DQE, start by creating and activating a new Conda environment using the f
 
 ```bash
 conda create --name dqe_env python=3.9
+conda create --name dqe_env python=3.9
 conda activate dqe_env
 ```
 
@@ -224,7 +225,7 @@ After downloading, place the unzipped dataset in the same directory. If you stor
 [//]: # (Navigate to the experiments/RealWorld_Data_Experiments directory to run an experiment. )
 
 [//]: # (Navigate to the experiments/RealWorld_Data_Experiments directory to run an experiment. )
-Execute the Python script real_data_exp_case.py for producing case results in paper by entering the following command:)
+Execute the Python script real_data_exp_case.py for producing case results in paper by entering the following command:
 
 [//]: # (Execute one of the example Python scripts by entering the following command:)
 
@@ -232,7 +233,7 @@ Execute the Python script real_data_exp_case.py for producing case results in pa
 python real_data_exp_case.py
 ```
 
-Execute the Python script real_data_exp_all_dataset.py for producing average results in paper:
+Execute the Python script real_data_exp_all_dataset.py for producing average results in paper by entering the following command:
 
 
 ```bash
