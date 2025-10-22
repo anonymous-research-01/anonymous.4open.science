@@ -45,9 +45,7 @@ Begin by importing the DQE module in your Python script:
 
 
 ```bash
-from meata import meata_auc_pr
-from config.meata_config import parameter_dict
-
+from DQE import DQE
 ```
 
 Prepare your input as arrays of anomaly scores (continues or binary) and binary labels. DQE allows for comprehensive customization of parameters. 
@@ -65,7 +63,6 @@ dqe, dqe_w_gt, dqe_w_near_ngt, dqe_w_distant_ngt, dqe_w_ngt = DQE(labels, output
 ```python 
 import numpy as np
 from DQE import DQE
-from config.meata_config import parameter_dict
 
 # Example data setup
 labels = np.array([0, 1, 0, 1, 0])
@@ -73,7 +70,7 @@ scores = np.array([0.1, 0.8, 0.1, 0.9, 0.2])
 
 # Compute DQE
 
-dqe, dqe_w_gt, dqe_w_near_ngt, dqe_w_distant_ngt, dqe_w_ngt = DQE(labels, output=scores,parameter_dict=parameter_dict)
+dqe, dqe_w_gt, dqe_w_near_ngt, dqe_w_distant_ngt, dqe_w_ngt = DQE(labels, output=scores)
 
 print(dqe)
 ```
