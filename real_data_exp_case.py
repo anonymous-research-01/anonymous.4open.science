@@ -10,7 +10,6 @@ from evaluation.slidingWindows import find_length_rank
 json_dir = "dataset/"
 first_file_path = json_dir + "all_methods_pred_res/"
 second_file_path = json_dir +"all_methods_pred_res/without_lstmad/"
-third_file_path = json_dir +"all_methods_pred_res/without_further_sub_mcd/"
 
 ori_data_path = json_dir +"TSB-AD-U/"
 
@@ -21,7 +20,6 @@ file_path_dict = {}
 file_list1 = os.listdir(first_file_path)
 # remove
 file_list1.remove("without_lstmad")
-file_list1.remove("without_further_sub_mcd")
 
 
 for file_name in file_list1:
@@ -31,12 +29,8 @@ for file_name in file_list2:
     file_path_dict[file_name] = second_file_path+file_name
 
 
-
-dataset_19_methods_file_list = os.listdir(first_file_path) + os.listdir(second_file_path) + os.listdir(third_file_path)
-
 dataset_20_methods_file_list = os.listdir(first_file_path)+os.listdir(second_file_path)
 
-dataset_21_methods_file_list = os.listdir(first_file_path)
 
 
 # YAHOO case
