@@ -323,13 +323,13 @@ class basic_metricor():
 
     def metric_meata_AUC_PR(self, label, score, preds=None,parameter_dict=parameter_dict,cal_mode="proportion"):
 
-        final_meata, meata,meata_w_gt,meata_w_near_ngt,meata_w_distant_ngt,meata_w_ngt = DQE(label,
+        meata,meata_w_gt,meata_w_near_ngt,meata_w_distant_ngt,meata_w_ngt = DQE(label,
                                                                                              preds,
                                                                                              output=score,
                                                                                              parameter_dict=parameter_dict,
                                                                                              cal_mode=cal_mode)
 
-        return final_meata, meata,meata_w_gt,meata_w_near_ngt,meata_w_distant_ngt,meata_w_ngt
+        return meata,meata_w_gt,meata_w_near_ngt,meata_w_distant_ngt,meata_w_ngt
 
 
     def metric_PATE_F1(self, label, score, preds=None,e_buffer=None,d_buffer=None):

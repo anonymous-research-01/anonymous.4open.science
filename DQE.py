@@ -1565,7 +1565,7 @@ def triangle_weights_add_v1(x: np.ndarray,values):
 
     return weight_sum,weights
 
-def DQE(y_true, y_score, output, parameter_dict=parameter_dict, max_ia_distant_length=None, pos_label=1, \
+def DQE(y_true, y_score=None, output=None, parameter_dict=parameter_dict, max_ia_distant_length=None, pos_label=1, \
         sample_weight=None, drop_intermediate=True, Big_Data=False, \
         num_desired_thresholds=250, ype="row_auc_add", find_type="ts_section", cal_mode="proportion"):
     y_score = output
@@ -1722,7 +1722,7 @@ def DQE(y_true, y_score, output, parameter_dict=parameter_dict, max_ia_distant_l
         print(" meata_w_distant_ngt", meata_w_distant_ngt)
         print(" final_meata", final_meata)
     meata_w_ngt = (meata_w_near_ngt+meata_w_distant_ngt) / 2
-    return final_meata, meata,meata_w_gt,meata_w_near_ngt,meata_w_distant_ngt,meata_w_ngt
+    return meata,meata_w_gt,meata_w_near_ngt,meata_w_distant_ngt,meata_w_ngt
 
 
 def cal_local_meata_value(gt_detection_mean, id_gt, id_thresh, local_distant_fq_matrix_np, local_f1_add_fp_matrix,

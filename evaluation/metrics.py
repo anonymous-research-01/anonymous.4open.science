@@ -91,11 +91,11 @@ def get_metrics(score, labels, slidingWindow=100, pred=None, version='opt', thre
         parameter_dict_copy = copy.deepcopy(parameter_dict)
         parameter_dict_copy["parameter_near_single_side_range"] = slidingWindow
 
-        final_meata, meata,meata_w_gt,meata_w_near_ngt,meata_w_distant_ngt,meata_w_ngt = grader.metric_meata_AUC_PR(labels, score, preds=pred,parameter_dict=parameter_dict_copy,cal_mode="proportion")
+        meata,meata_w_gt,meata_w_near_ngt,meata_w_distant_ngt,meata_w_ngt = grader.metric_meata_AUC_PR(labels, score, preds=pred,parameter_dict=parameter_dict_copy,cal_mode="proportion")
 
         time_end = time.time()
         print("meata_auc time_end - time_start", time_end - time_start)
-        metrics['final_meata'] = final_meata
+        metrics['final_meata'] = meata
         metrics['meata'] = meata
         metrics['meata_w_gt'] = meata_w_gt
         metrics['meata_w_near_ngt'] = meata_w_near_ngt

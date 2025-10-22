@@ -62,7 +62,7 @@ def evaluate_all_metrics(pred, labels, vus_zone_size=20, e_buffer=20, d_buffer=2
 
     # Standard Original F1-Score
     PointF1 = grader.metric_PointF1(labels, score=pred, preds=pred)
-    final_meata, meata, meata_w_gt, meata_w_near_ngt, meata_w_distant_ngt, meata_w_ngt = DQE(labels,
+    meata, meata_w_gt, meata_w_near_ngt, meata_w_distant_ngt, meata_w_ngt = DQE(labels,
                                                                                              pred,
                                                                                              output=pred,
                                                                                              parameter_dict=parameter_dict,
@@ -105,7 +105,7 @@ def evaluate_all_metrics(pred, labels, vus_zone_size=20, e_buffer=20, d_buffer=2
         "PATE": pate,
         "PATE-F1": pate_f1,
 
-        "final_meata": final_meata,
+        "final_meata": meata,
         "meata": meata,
         "meata_w_gt": meata_w_gt,
         "meata_w_near_ngt": meata_w_near_ngt,

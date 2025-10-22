@@ -57,7 +57,7 @@ Please refer to the main code documentation for a full list of configurable opti
 Example usage of DQE:
 
 ```bash
-    final_dqe, dqe, dqe_w_gt, dqe_w_near_ngt, dqe_w_distant_ngt, dqe_w_ngt = meata_auc_pr(labels,output=pred,parameter_dict=parameter_dict,cal_mode="proportion")
+dqe, dqe_w_gt, dqe_w_near_ngt, dqe_w_distant_ngt, dqe_w_ngt = DQE(labels, output=scores,parameter_dict=parameter_dict)
 ```
 
 ### Basic Example
@@ -73,9 +73,7 @@ scores = np.array([0.1, 0.8, 0.1, 0.9, 0.2])
 
 # Compute DQE
 
-final_dqe, dqe, dqe_w_gt, dqe_w_near_ngt, dqe_w_distant_ngt, dqe_w_ngt = DQE(labels, output=scores,
-                                                                             parameter_dict=parameter_dict,
-                                                                             cal_mode="proportion")
+dqe, dqe_w_gt, dqe_w_near_ngt, dqe_w_distant_ngt, dqe_w_ngt = DQE(labels, output=scores,parameter_dict=parameter_dict)
 
 print(dqe)
 ```
