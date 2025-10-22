@@ -50,10 +50,6 @@ method_name_index_dict = {}
 for i, method_name in enumerate(dataset_methods_choose_name_list):
     method_name_index_dict[method_name] = i
 
-from pprint import pprint
-print("method_name_index_dict")
-pprint(method_name_index_dict)
-
 data_set_choose_file_list = []
 for dataset_method_file in dataset_methods_file_list:
     if ("LTDB" in dataset_method_file
@@ -63,7 +59,7 @@ for dataset_method_file in dataset_methods_file_list:
     if "_name_list" in dataset_method_file:
         data_set_choose_file_list.append(dataset_method_file)
 
-print("len(data_set_choose_file_list)",len(data_set_choose_file_list))
+# print("len(data_set_choose_file_list)",len(data_set_choose_file_list))
 
 
 # integral every dataset
@@ -154,7 +150,7 @@ for i, data_set_choose_file in enumerate(data_set_choose_file_list):
         data = json.load(file)
 
     for j, dataset_methods_choose_name in enumerate(dataset_methods_choose_name_list):
-        print()
+        # print()
 
         methods_choose_outputs = data[dataset_methods_choose_name]
 
@@ -170,7 +166,7 @@ for i, data_set_choose_file in enumerate(data_set_choose_file_list):
         ori_data = df.iloc[:, 0:-1].values.astype(float)
         label = df['Label'].astype(int).to_numpy()
         slidingWindow = find_length_rank(ori_data, rank=1)
-        print("slidingWindow",slidingWindow)
+        # print("slidingWindow",slidingWindow)
 
 
         output = methods_choose_outputs
@@ -187,7 +183,7 @@ for i, data_set_choose_file in enumerate(data_set_choose_file_list):
         metric_score_dict = get_metrics(output_array, label, slidingWindow=slidingWindow,thre=100)
         print(" metric_score_dict",metric_score_dict)
         time_end = time.time()
-        print(" all method time_end - time_start",time_end - time_start)
+        # print(" all method time_end - time_start",time_end - time_start)
         file_method_metric_dict[data_set_choose_file][dataset_methods_choose_name] = metric_score_dict
 
 res_seve_path = res_save_dir + "metric_calc_res" + choose_method_num+".json"

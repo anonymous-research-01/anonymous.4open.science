@@ -158,7 +158,7 @@ def handle_continuous_scores(y_true, y_score, e_buffer, d_buffer, pos_label, sam
             # Calculate and append AUC-PR for current buffer size combination
             auc_pr = clean_and_compute_auc_pr(recall, precision)
             auc_pr_list.append(auc_pr)
-            print("+++++++++++",cal_index)
+            # print("+++++++++++",cal_index)
             cal_index+=1
     
     # Calculate the average AUC-PR across all combinations

@@ -1776,8 +1776,8 @@ def row_add_weight_sum(local_distant_fq_mean, local_near_fq_mean, \
 
 def cal_meata_f1(local_distant_fq_i, local_near_fq_i, local_precision_i, local_recall_i, parameter_w_gt,
                  parameter_w_near_ngt,gt_detected_rate):
-    print_msg = True
-    # print_msg = False
+    # print_msg = True
+    print_msg = False
     local_meata_recall_i = parameter_w_gt * local_recall_i*gt_detected_rate + \
                            parameter_w_near_ngt * local_near_fq_i + \
                            (1 - parameter_w_gt - parameter_w_near_ngt) * local_distant_fq_i

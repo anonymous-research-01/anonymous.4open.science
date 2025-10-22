@@ -27,6 +27,8 @@ paint_name_list = [
     'original_F1Score',
     'pa_f_score',
     'pa_k_score',
+    'dtpa_f_score',
+    'ls_f_score',
     'Rbased_f1score',
 
 ]
@@ -39,6 +41,8 @@ name_dict = {
     "original_F1Score": "Original-F",
     "pa_f_score": "PA-F",
     "pa_k_score": "\%K-PA-F",
+    "dtpa_f_score":"DTPA-F",
+    "ls_f_score":"LS-F",
     "Rbased_f1score": "RF",
     "eTaPR_f1_score": "eTaF",
     "Affliation F1score": "AF",
@@ -199,7 +203,7 @@ if test_flag == "test":
     json_file_name = "Non-GT area pred case"
     vus_zone_size = e_buffer = d_buffer = parameter_near_single_side_range = 20
 
-    print("label_ranges", label_ranges)
+    # print("label_ranges", label_ranges)
 
     caption_str = "Comparison of the metrics about the issue of unreasonable evaluation on FP predictions(L2) using synthetic data."
     choose_metric_name_order_list = [
@@ -305,11 +309,11 @@ if test_flag == "test":
         "DQE",
     ]
 
-print("label_ranges", label_ranges)
-print("window_length", window_length)
+# print("label_ranges", label_ranges)
+# print("window_length", window_length)
 
 ordered_num = len(label_ranges)
-print("ordered_num", ordered_num)
+# print("ordered_num", ordered_num)
 
 label_array_list = []
 res_data = []
@@ -324,7 +328,7 @@ for i, single_range in enumerate(label_ranges):
 
         label_array_copy = copy.deepcopy(label_array)
         label_array_list.append(label_array_copy)
-        print("============== pred" + str(i))
+        # print("============== pred" + str(i))
 
         score_list_simple = evaluate_all_metrics(label_array,
                                                  label_array_list[0],
@@ -334,7 +338,7 @@ for i, single_range in enumerate(label_ranges):
                                                  parameter_near_single_side_range=parameter_near_single_side_range,
                                                  parameter_dict_new=parameter_dict_new,
                                                  )
-        print(score_list_simple)
+        # print(score_list_simple)
 
         selected_dict = {}
 
@@ -362,7 +366,7 @@ file_path = "dataset/metric_cal_res_windows/synthetic_data_res" + json_file_name
 import pandas as pd
 
 
-print("res_data", res_data)
+# print("res_data", res_data)
 res_data_dict = {}
 
 new_res_data = []
@@ -378,45 +382,6 @@ with open(file_path, "w", encoding="utf-8") as file:
     json_str = encoder.encode(new_res_data)
     file.write(json_str)
 
-# DTPA-F, LS-F,NAB and CF,SF
-# DTPA-F, \%K-PA-F
-if json_file_name == "figure (Long-length Bias 1 and 2)":
-    new_res_data[0]["DTPA-F"] = 1.0
-    new_res_data[0]["\%K-PA-F"] = 1.0
-    new_res_data[0]["LS-F"] = 1.0
-    new_res_data[0]["NAB"] = 100
-    new_res_data[0]["CF"] = 1.0
-    new_res_data[0]["SF"] = 1.0
-    new_res_data[0]["TaF"] = 1.0
-
-    new_res_data[1]["DTPA-F"] = 0.67
-    new_res_data[1]["\%K-PA-F"] = 0.67
-    new_res_data[1]["LS-F"] = 0.71
-    new_res_data[1]["NAB"] = 50.0
-    new_res_data[1]["CF"] = 0.67
-    new_res_data[1]["SF"] = 0.67
-    new_res_data[1]["TaF"] = 0.67
-
-    new_res_data[2]["DTPA-F"] = 1.0
-    new_res_data[2]["\%K-PA-F"] = 0.22
-    new_res_data[2]["LS-F"] = 1.0
-    new_res_data[2]["NAB"] = 100
-    new_res_data[2]["CF"] = 1.0
-    new_res_data[2]["SF"] = 1.0
-    new_res_data[2]["TaF"] = 0.72
-
-if json_file_name == "figure (Long-length Bias 3)":
-    new_res_data[0]["DTPA-F"] = 1.0
-    new_res_data[0]["\%K-PA-F"] = 1.0
-    new_res_data[0]["LS-F"] = 1.0
-
-    new_res_data[1]["DTPA-F"] = 0.83
-    new_res_data[1]["\%K-PA-F"] = 0.83
-    new_res_data[1]["LS-F"] = 0.75
-
-    new_res_data[2]["DTPA-F"] = 0.44
-    new_res_data[2]["\%K-PA-F"] = 0.44
-    new_res_data[2]["LS-F"] = 0.57
 
 reorder_new_res_data = []
 for i, pred_score_dict in enumerate(new_res_data):
@@ -434,12 +399,6 @@ new_res_data = new_res_data[1:]
 df = pd.DataFrame(new_res_data)
 
 
-def insert_row(df, row_index, new_row):
-    new_row_df = pd.DataFrame([new_row])
-    df = pd.concat([df.iloc[:row_index], new_row_df, df.iloc[row_index:]], ignore_index=True)
-    return df
-
-
 insert_data = []
 figure_name = json_file_name
 figure_str = "\\includegraphics{figures/single_prediction_figures/" + figure_name
@@ -449,93 +408,3 @@ for i in range(1, len(label_ranges)):
 df.insert(0, figure_str + " GT" + "}", insert_data)
 
 print("new_res_data", new_res_data)
-
-pred_index_list = []
-
-if ordered_num - 1 == 1:
-    pred_index_list = [r'P']
-else:
-    for i in range(0, ordered_num - 1):
-        pred_index_list.append(r'P' + str(i + 1))
-
-df.index = pred_index_list
-
-latex_table = df.to_latex(
-    index=True,
-    caption=caption_str,
-    label='tab:' + json_file_name,
-    escape=False,
-    column_format='@{}lccccccccccc@{}',
-    position='h!',
-    float_format='%.2f'
-)
-
-
-latex_table = latex_table.replace(
-    "\\toprule\n",
-    "\\toprule\ngt"
-)
-
-start_pos = latex_table.find("\\toprule")
-end_pos = latex_table.find("\midrule")
-first_line = latex_table[start_pos + len("\\toprule\n"):end_pos]
-
-start_pos = latex_table.find("\\toprule")
-
-new_first_line = first_line + "\n" + first_line
-latex_table = latex_table.replace(
-    first_line,
-    new_first_line
-)
-
-latex_table = latex_table.replace(
-    "\\begin{tabular}",
-    "\\resizebox{\\columnwidth}{!}{" + "\n" + "\\begin{tabular}"
-)
-latex_table = latex_table.replace(
-    "\\end{tabular}",
-    "\\end{tabular}" + "\n" + "}"
-)
-
-latex_table = latex_table.replace(
-    "\\toprule\n",
-    "\n"
-)
-latex_table = latex_table.replace(
-    "\\midrule\n",
-    "\n"
-)
-latex_table = latex_table.replace(
-    "\\bottomrule\n",
-    "\n"
-)
-
-latex_table = latex_table.replace("Original-F", "Original-F$^{\\textcolor{cyan6}{*}}$")
-latex_table = latex_table.replace("AUC-PR", "AUC-PR$^{\\textcolor{cyan6}{*}}$")
-latex_table = latex_table.replace("AUC-ROC", "AUC-ROC$^{\\textcolor{cyan6}{*}}$")
-latex_table = latex_table.replace("PA-F", "PA-F$^{\\textcolor{purple4}{*}}$")
-
-latex_table = latex_table.replace(" DTPA-F ", " DTPA-F$^{\\textcolor{purple4}{*}}$ ")
-latex_table = latex_table.replace(" \%K-PA-F ", " \%K-PA-F$^{\\textcolor{purple4}{*}}$ ")
-latex_table = latex_table.replace(" LS-F ", " LS-F$^{\\textcolor{purple4}{*}}$ ")
-
-latex_table = latex_table.replace(" DTPA-F ", " DTPA-F$^{\odot}$ ")
-latex_table = latex_table.replace(" \%K-PA-F ", " \%K-PA-F$^{\odot}$ ")
-latex_table = latex_table.replace(" LS-F ", " LS-F$^{\odot}$ ")
-
-latex_table = latex_table.replace("RF", "RF$^{\star}$")
-latex_table = latex_table.replace("eTaF", "eTaF$^{\star}$")
-latex_table = latex_table.replace("PATE", "PATE$^{*}$")
-latex_table = latex_table.replace("VUS-PR", "VUS-PR$^{*}$")
-latex_table = latex_table.replace("VUS-ROC", "VUS-ROC$^{*}$")
-latex_table = latex_table.replace(" AF &", " AF$^{\star}$ &")
-latex_table = latex_table.replace("DQE", "DQE$^{\star}$")
-
-latex_table = latex_table.replace(" & 0 & ", " & 0.00 & ")
-latex_table = latex_table.replace(" & 0 & ", " & 0.00 & ")
-
-print()
-print(latex_table)
-print()
-
-latex_code_file_path = "paper/src/latex_code/table_code/" + json_file_name + ".tex"

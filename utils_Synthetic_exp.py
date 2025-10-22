@@ -17,7 +17,7 @@ project_root = os.path.dirname(os.path.dirname(current_dir))  # Two levels up
 sys.path.append(project_root)
 
 
-from metrics.metrics_pa import PointAdjustKPercent
+from metrics.metrics_pa import PointAdjustKPercent,DelayThresholdedPointAdjust,LatencySparsityAware
 
 from pate.PATE_metric import PATE
 from pate.PATE_utils import convert_events_to_array_PATE, categorize_predicted_ranges_with_ids, \
@@ -73,6 +73,12 @@ def evaluate_all_metrics(pred, labels, vus_zone_size=20, e_buffer=20, d_buffer=2
     pa_k = PointAdjustKPercent(window_length, labels_ranges, pred_ranges)
     pa_k_score = pa_k.get_score()
 
+    dtpa_f = DelayThresholdedPointAdjust(window_length, labels_ranges, pred_ranges)
+    dtpa_f_score = dtpa_f.get_score()
+
+    ls_f = LatencySparsityAware(window_length, labels_ranges, pred_ranges)
+    ls_f_score = ls_f.get_score()
+
     PointF1PA = grader.metric_PointF1PA(labels, score=pred, preds=pred)
 
     score_list_simple = {
@@ -82,6 +88,8 @@ def evaluate_all_metrics(pred, labels, vus_zone_size=20, e_buffer=20, d_buffer=2
         # "pa_recall":pa_recall,
         "pa_f_score": PointF1PA,
         "pa_k_score": pa_k_score,
+        "dtpa_f_score": dtpa_f_score,
+        "ls_f_score": ls_f_score,
 
         # "Rbased_precision":Rbased_precision,
         # "Rbased_recall":Rbased_recall,
