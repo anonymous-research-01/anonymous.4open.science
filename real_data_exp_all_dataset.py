@@ -29,9 +29,7 @@ for file_name in file_list2:
     file_path_dict[file_name] = second_file_path+file_name
 
 
-dataset_19_methods_name_list = ['AutoEncoder', 'CNN', 'FFT', 'FITS', 'IForest', 'KMeansAD_U', 'LOF', 'M2N2', 'OmniAnomaly', 'POLY', 'SR', 'Sub_HBOS', 'Sub_IForest', 'Sub_KNN', 'Sub_LOF', 'Sub_OCSVM', 'Sub_PCA', 'TimesNet','USAD']
-dataset_20_methods_name_list = dataset_19_methods_name_list + ['Sub_MCD']
-
+dataset_20_methods_name_list = ['SR', 'KMeansAD_U', 'Sub_KNN', 'TimesNet', 'CNN', 'Sub_LOF', 'FFT','Sub_MCD']
 
 
 dataset_20_methods_file_list = os.listdir(first_file_path)+os.listdir(second_file_path)
