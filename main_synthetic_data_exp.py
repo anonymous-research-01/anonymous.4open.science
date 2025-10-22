@@ -398,13 +398,4 @@ new_res_data = new_res_data[1:]
 
 df = pd.DataFrame(new_res_data)
 
-
-insert_data = []
-figure_name = json_file_name
-figure_str = "\\includegraphics{figures/single_prediction_figures/" + figure_name
-for i in range(1, len(label_ranges)):
-    insert_data.append(figure_str + " pred" + i.__str__() + "}")
-
-df.insert(0, figure_str + " GT" + "}", insert_data)
-
 print("new_res_data", new_res_data)
