@@ -1,7 +1,3 @@
-
-
-
-
 import json
 import os
 import numpy as np
@@ -11,7 +7,6 @@ import time
 from evaluation.metrics import get_metrics
 from evaluation.slidingWindows import find_length_rank
 
-# 指定 JSON 文件路径
 json_dir = "dataset/"
 first_file_path = json_dir + "all_methods_pred_res/"
 second_file_path = json_dir +"all_methods_pred_res/without_lstmad/"
@@ -40,15 +35,9 @@ for file_name in file_list3:
 
 
 
-# # lstmad file list
-# # 19种方法先跑,跑全有的,三次文件
-# ['LSTMAD']
-# ['Sub_MCD']
-# 方法短一个
+
 dataset_19_methods_name_list = ['AutoEncoder', 'CNN', 'FFT', 'FITS', 'IForest', 'KMeansAD_U', 'LOF', 'M2N2', 'OmniAnomaly', 'POLY', 'SR', 'Sub_HBOS', 'Sub_IForest', 'Sub_KNN', 'Sub_LOF', 'Sub_OCSVM', 'Sub_PCA', 'TimesNet','USAD']
-# dataset_19_methods_name_list = ['CNN', 'SR']
 dataset_20_methods_name_list = dataset_19_methods_name_list + ['Sub_MCD']
-# dataset_21_methods_name_list = dataset_20_methods_name_list + ['LSTMAD']
 
 
 # # 19种方法先跑,跑19种全有的,第一次,第二次,第三次文件
@@ -57,8 +46,6 @@ dataset_19_methods_file_list = os.listdir(first_file_path) + os.listdir(second_f
 # # 20种方法先跑,加sub_mcd,跑20种全有的,第一次,第二次文件
 dataset_20_methods_file_list = os.listdir(first_file_path)+os.listdir(second_file_path)
 
-# # 21种方法先跑,加sub_mcd,lstmad,跑21种全有的,第一次文件
-dataset_21_methods_file_list = os.listdir(first_file_path)
 
 
 
@@ -223,7 +210,7 @@ res_seve_path = res_save_dir + "metric_calc_res" + choose_method_num+".json"
 with open(res_seve_path, 'w', encoding='utf-8') as json_file:
     json.dump(file_method_metric_dict, json_file, indent=4, ensure_ascii=False)
 
-print(f"数据已成功写入 {res_seve_path}")
+print(f"write to {res_seve_path}")
 
 
 

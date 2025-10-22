@@ -1,7 +1,3 @@
-
-
-
-
 import json
 import os
 import numpy as np
@@ -11,7 +7,6 @@ import time
 from evaluation.metrics import get_metrics
 from evaluation.slidingWindows import find_length_rank
 
-# 指定 JSON 文件路径
 json_dir = "dataset/"
 first_file_path = json_dir + "all_methods_pred_res/"
 second_file_path = json_dir +"all_methods_pred_res/without_lstmad/"
@@ -228,7 +223,7 @@ res_seve_path = res_save_dir + "metric_calc_res" + choose_method_num+".json"
 with open(res_seve_path, 'w', encoding='utf-8') as json_file:
     json.dump(file_method_metric_dict, json_file, indent=4, ensure_ascii=False)
 
-print(f"数据已成功写入 {res_seve_path}")
+print(f"write to {res_seve_path}")
 
 
 

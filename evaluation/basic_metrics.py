@@ -6,7 +6,7 @@ import copy
 from metrics.eTaPR_pkg import f1_score_etapr
 from metrics.metrics_pa import PointAdjustKPercent
 from pate.PATE_metric import PATE
-from meata import meata_f1,meata_f1_first,meata_auc_pr
+from DQE import DQE
 from config.meata_config import parameter_dict
 from pate.PATE_utils import convert_vector_to_events_PATE
 
@@ -321,235 +321,16 @@ class basic_metricor():
 
         return eTaPR_F1
 
-    def metric_meata_F1(self, label, score, preds=None,parameter_dict=parameter_dict,cal_mode="proportion"):
-        if preds is None:
-            thresholds = np.linspace(score.min(), score.max(), 100)
-            meata_f1_score_list = []
-            meata_f1_multiply_score_list = []
-
-            meata_f1_score_w_gt_list = []
-            # meata_f1_multiply_score_w0_list = []
-
-            meata_f1_score_w_near_ngt_list = []
-            # meata_f1_multiply_score_w1_list = []
-
-            meata_f1_score_w_distant_ngt_list = []
-            # meata_f1_multiply_score_w1_list = []
-
-            meata_f1_score_w_ngt_list = []
-
-            # recall_info_list = []
-            # recall_score_info_list = []
-
-            preds_list = []
-
-            # test meata_recall
-            # Sub_OCSVM
-            # max_f1_idx 57
-            # TimesNet
-            # max_f1_idx 5,23
-
-            # CNN
-            # max_f1_idx 6
-            # SR
-            # max_f1_idx 15,precision=3,distant_method=1
-            # max_f1_idx 43,precision=3,distant_method=2
-            # FFT
-            # max_f1_idx 25
-
-            # thresh_id = 15
-            # threshold = thresholds[thresh_id]
-            # preds = (score > threshold).astype(int)
-            # # meata_f1_score,meata_f1_multiply_score,\
-            # # meata_f1_w0,coefficient_meata_f1_w0,meata_f1_w1,coefficient_meata_f1_w1,\
-            # # recall_info_choose = meata_f1(label, preds, output=score,parameter_dict=parameter_dict, thresh_id=thresh_id,cal_mode=cal_mode)
-            # final_meata_f1, meata_f1_score, \
-            #     meata_f1_w_gt, meata_f1_w_near_ngt, meata_f1_w_distant_ngt,meata_f1_w_ngt = meata_f1(label,
-            #                                                                           preds,
-            #                                                                           output=score,
-            #                                                                           parameter_dict=parameter_dict,
-            #                                                                           thresh_id=thresh_id,
-            #                                                                           cal_mode=cal_mode)
-            # meata_F1 = final_meata_f1
-            # meata_F1_multiply = meata_f1_score
-            # meata_F1_w_gt = meata_f1_w_gt
-            # meata_F1_w_near_ngt = meata_f1_w_near_ngt
-            # meata_F1_w_distant_ngt = meata_f1_w_distant_ngt
-            # meata_F1_w_ngt = meata_f1_w_ngt
-
-
-            for i, threshold in enumerate(thresholds):
-                print("threshold index", i)
-                if i ==18:
-                    d=1
-                preds = (score > threshold).astype(int)
-                # meata_f1_score,meata_f1_multiply_score = meata_f1(label, preds, parameter_dict=parameter_dict, cal_mode=cal_mode)
-                # meata_f1_score,meata_f1_multiply_score,\
-                #     meata_f1_w0,coefficient_meata_f1_w0,meata_f1_w1,coefficient_meata_f1_w1,\
-                #     recall_info = meata_f1(label, preds, output=score,parameter_dict=parameter_dict, thresh_id=i,cal_mode=cal_mode)
-
-                final_meata_f1, meata_f1_score, \
-                    meata_f1_w_gt, meata_f1_w_near_ngt, meata_f1_w_distant_ngt,meata_f1_w_ngt = meata_f1(label, preds, output=score,parameter_dict=parameter_dict, thresh_id=i,cal_mode=cal_mode)
-
-                meata_f1_score_list.append(meata_f1_score)
-                meata_f1_multiply_score_list.append(final_meata_f1)
-
-                meata_f1_score_w_gt_list.append(meata_f1_w_gt)
-                # meata_f1_multiply_score_w0_list.append(coefficient_meata_f1_w0)
-                meata_f1_score_w_near_ngt_list.append(meata_f1_w_near_ngt)
-                # meata_f1_multiply_score_w1_list.append(coefficient_meata_f1_w1)
-                meata_f1_score_w_distant_ngt_list.append(meata_f1_w_distant_ngt)
-                # meata_f1_multiply_score_w1_list.append(coefficient_meata_f1_w1)
-                meata_f1_score_w_ngt_list.append(meata_f1_w_ngt)
-
-
-                # recall_info_list.append(recall_info)
-                # recall_score_info_list.append(recall_info["event_recall"])
-
-                preds_list.append(preds)
-
-
-            meata_F1_Threshold = thresholds[np.argmax(meata_f1_score_list)]
-            # print("meata F1 best thresh:",meata_F1_Threshold)
-            meata_F1 = max(meata_f1_score_list)
-
-            meata_F1_multiply_Threshold = thresholds[np.argmax(meata_f1_multiply_score_list)]
-            print("meata F1 multiply best thresh:",meata_F1_multiply_Threshold)
-
-            meata_F1_multiply = max(meata_f1_multiply_score_list)
-
-            max_f1_idx = np.argmax(meata_f1_score_list)
-            print("max_f1_idx",max_f1_idx)
-            print("meata_F1_Threshold",meata_F1_Threshold)
-
-            max_f1_multiply_idx = np.argmax(meata_f1_multiply_score_list)
-
-            meata_F1_w_gt = meata_f1_score_w_gt_list[max_f1_idx]
-            # meata_F1_multiply_w0 = meata_f1_multiply_score_w0_list[max_f1_multiply_idx]
-            meata_F1_w_near_ngt = meata_f1_score_w_near_ngt_list[max_f1_idx]
-            # meata_F1_multiply_w1 = meata_f1_multiply_score_w1_list[max_f1_multiply_idx]
-            meata_F1_w_distant_ngt = meata_f1_score_w_distant_ngt_list[max_f1_idx]
-            # meata_F1_multiply_w1 = meata_f1_multiply_score_w1_list[max_f1_multiply_idx]
-            meata_F1_w_ngt = meata_f1_score_w_ngt_list[max_f1_idx]
-
-        else:
-            meata_F1,meata_F1_multiply,meata_F1_w_gt,meata_F1_w_near_ngt,meata_F1_w_distant_ngt = meata_f1(label, preds, parameter_dict=parameter_dict, cal_mode=cal_mode)
-        return meata_F1,meata_F1_multiply,\
-            meata_F1_w_gt,meata_F1_w_near_ngt,meata_F1_w_distant_ngt,meata_F1_w_ngt
-
     def metric_meata_AUC_PR(self, label, score, preds=None,parameter_dict=parameter_dict,cal_mode="proportion"):
-        # if preds is None:
-        # thresholds = np.linspace(score.min(), score.max(), 100)
-        final_meata, meata,meata_w_gt,meata_w_near_ngt,meata_w_distant_ngt,meata_w_ngt = meata_auc_pr(label,
-                                                                                  preds,
-                                                                                  output=score,
-                                                                                  parameter_dict=parameter_dict,
-                                                                                  cal_mode=cal_mode)
-        # meata_F1 = final_meata
-        # meata_F1_multiply = meata
-        # meata_F1_w_gt = meata_w_near_ngt
-        # meata_F1_w_near_ngt = meata_w_near_ngt
-        # meata_F1_w_distant_ngt = meata_w_distant_ngt
 
+        final_meata, meata,meata_w_gt,meata_w_near_ngt,meata_w_distant_ngt,meata_w_ngt = DQE(label,
+                                                                                             preds,
+                                                                                             output=score,
+                                                                                             parameter_dict=parameter_dict,
+                                                                                             cal_mode=cal_mode)
 
-            # for i, threshold in enumerate(thresholds):
-            #     print("threshold index", i)
-            #     if i ==18:
-            #         d=1
-            #     preds = (score > threshold).astype(int)
-            #     # meata_f1_score,meata_f1_multiply_score = meata_f1(label, preds, parameter_dict=parameter_dict, cal_mode=cal_mode)
-            #     # meata_f1_score,meata_f1_multiply_score,\
-            #     #     meata_f1_w0,coefficient_meata_f1_w0,meata_f1_w1,coefficient_meata_f1_w1,\
-            #     #     recall_info = meata_f1(label, preds, output=score,parameter_dict=parameter_dict, thresh_id=i,cal_mode=cal_mode)
-            #
-            #     final_meata_f1, meata_f1_score, \
-            #         meata_f1_w_gt, meata_f1_w_near_ngt, meata_f1_w_distant_ngt = meata_f1(label, preds, output=score,parameter_dict=parameter_dict, thresh_id=i,cal_mode=cal_mode)
-            #
-            #     meata_f1_score_list.append(meata_f1_score)
-            #     meata_f1_multiply_score_list.append(final_meata_f1)
-            #
-            #     meata_f1_score_w_gt_list.append(meata_f1_w_gt)
-            #     # meata_f1_multiply_score_w0_list.append(coefficient_meata_f1_w0)
-            #     meata_f1_score_w_near_ngt_list.append(meata_f1_w_near_ngt)
-            #     # meata_f1_multiply_score_w1_list.append(coefficient_meata_f1_w1)
-            #     meata_f1_score_w_distant_ngt_list.append(meata_f1_w_distant_ngt)
-            #     # meata_f1_multiply_score_w1_list.append(coefficient_meata_f1_w1)
-            #
-            #     # recall_info_list.append(recall_info)
-            #     # recall_score_info_list.append(recall_info["event_recall"])
-            #
-            #     preds_list.append(preds)
-            #
-            #
-            # meata_F1_Threshold = thresholds[np.argmax(meata_f1_score_list)]
-            # # print("meata F1 best thresh:",meata_F1_Threshold)
-            # meata_F1 = max(meata_f1_score_list)
-            #
-            # meata_F1_multiply_Threshold = thresholds[np.argmax(meata_f1_multiply_score_list)]
-            # print("meata F1 multiply best thresh:",meata_F1_multiply_Threshold)
-            #
-            # meata_F1_multiply = max(meata_f1_multiply_score_list)
-            #
-            # max_f1_idx = np.argmax(meata_f1_score_list)
-            # print("max_f1_idx",max_f1_idx)
-            # print("meata_F1_Threshold",meata_F1_Threshold)
-            #
-            # max_f1_multiply_idx = np.argmax(meata_f1_multiply_score_list)
-            #
-            # meata_F1_w_gt = meata_f1_score_w_gt_list[max_f1_idx]
-            # # meata_F1_multiply_w0 = meata_f1_multiply_score_w0_list[max_f1_multiply_idx]
-            # meata_F1_w_near_ngt = meata_f1_score_w_near_ngt_list[max_f1_idx]
-            # # meata_F1_multiply_w1 = meata_f1_multiply_score_w1_list[max_f1_multiply_idx]
-            # meata_F1_w_distant_ngt = meata_f1_score_w_distant_ngt_list[max_f1_idx]
-            # # meata_F1_multiply_w1 = meata_f1_multiply_score_w1_list[max_f1_multiply_idx]
-        # else:
-        #     meata_F1,meata_F1_multiply,meata_F1_w_gt,meata_F1_w_near_ngt,meata_F1_w_distant_ngt = meata_f1(label, preds, parameter_dict=parameter_dict, cal_mode=cal_mode)
         return final_meata, meata,meata_w_gt,meata_w_near_ngt,meata_w_distant_ngt,meata_w_ngt
 
-
-    def metric_meata_F1_score_first(self, label, score, preds=None,parameter_dict=parameter_dict,cal_mode="proportion"):
-        if preds is None:
-            thresholds = np.linspace(score.min(), score.max(), 100)
-            meata_f1_score_list = []
-            meata_f1_multiply_score_list = []
-            meata_f1_score_w0_list = []
-            meata_f1_multiply_score_w0_list = []
-            meata_f1_score_w1_list = []
-            meata_f1_multiply_score_w1_list = []
-
-            for i, threshold in enumerate(thresholds):
-                print("threshold index", i)
-                if i ==18:
-                    d=1
-                preds = (score > threshold).astype(int)
-                meata_f1_score,meata_f1_multiply_score,\
-                    meata_f1_first_w0,coefficient_meata_f1_first_w0,meata_f1_first_w1,coefficient_meata_f1_first_w1 = meata_f1_first(label, preds, parameter_dict=parameter_dict, cal_mode=cal_mode)
-
-                meata_f1_score_list.append(meata_f1_score)
-                meata_f1_multiply_score_list.append(meata_f1_score)
-
-                meata_f1_score_w0_list.append(meata_f1_first_w0)
-                meata_f1_multiply_score_w0_list.append(coefficient_meata_f1_first_w0)
-                meata_f1_score_w1_list.append(meata_f1_first_w1)
-                meata_f1_multiply_score_w1_list.append(coefficient_meata_f1_first_w1)
-
-            meata_F1_Threshold = thresholds[np.argmax(meata_f1_score_list)]
-            meata_F1 = max(meata_f1_score_list)
-
-            meata_F1_multiply_Threshold = thresholds[np.argmax(meata_f1_multiply_score_list)]
-            meata_F1_multiply = max(meata_f1_multiply_score_list)
-
-            max_f1_idx = np.argmax(meata_f1_score_list)
-            max_f1_multiply_idx = np.argmax(meata_f1_multiply_score_list)
-
-            meata_F1_w0 = meata_f1_score_w0_list[max_f1_idx]
-            meata_F1_multiply_w0 = meata_f1_multiply_score_w0_list[max_f1_multiply_idx]
-            meata_F1_w1 = meata_f1_score_w1_list[max_f1_idx]
-            meata_F1_multiply_w1 = meata_f1_multiply_score_w1_list[max_f1_multiply_idx]
-
-        else:
-            meata_F1,meata_F1_multiply = meata_f1(label, preds, parameter_dict=parameter_dict, cal_mode=cal_mode)
-        return meata_F1,meata_F1_multiply,meata_F1_w0,meata_F1_multiply_w0,meata_F1_w1,meata_F1_multiply_w1
 
     def metric_PATE_F1(self, label, score, preds=None,e_buffer=None,d_buffer=None):
         if preds is None:
@@ -558,9 +339,6 @@ class basic_metricor():
 
             for threshold in thresholds:
                 preds = (score > threshold).astype(int)
-                # 已经用过thresh了，直接设置成不用thresh的
-                # pate_f1 = PATE(label, preds, e_buffer, d_buffer, Big_Data=True, n_jobs=1,
-                #      include_zero=False, binary_scores=True)
                 pate_f1 = PATE(label, preds, e_buffer, d_buffer, Big_Data=False, n_jobs=1,
                                include_zero=False, binary_scores=True)
                 pate_f1_score_list.append(pate_f1)
@@ -569,12 +347,9 @@ class basic_metricor():
             PATE_F1 = max(pate_f1_score_list)
 
         else:
-            # preds_int = preds.astype(int)
-            # PATE_F1 = PATE(label, preds, e_buffer, d_buffer, Big_Data=True, n_jobs=1,
-            #          include_zero=False, binary_scores=True)
+
             pate_f1 = PATE(label, preds, e_buffer, d_buffer, Big_Data=False, n_jobs=1,
                            include_zero=False, binary_scores=True)
-            debug =1
 
 
         return PATE_F1

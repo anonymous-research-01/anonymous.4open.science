@@ -1,4 +1,4 @@
-from meata import get_meate_gt_area
+from DQE import get_meate_gt_area
 from metrics.affiliation.generics import convert_vector_to_events
 from pate.PATE_utils import convert_events_to_array_PATE, convert_events_to_point_array, \
     convert_vector_to_events_PATE
