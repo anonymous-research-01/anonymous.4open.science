@@ -30,20 +30,14 @@ file_list2 = os.listdir(second_file_path)
 for file_name in file_list2:
     file_path_dict[file_name] = second_file_path+file_name
 file_list3 = os.listdir(third_file_path)
-for file_name in file_list3:
-    file_path_dict[file_name] = third_file_path+file_name
-
-
 
 
 dataset_19_methods_name_list = ['AutoEncoder', 'CNN', 'FFT', 'FITS', 'IForest', 'KMeansAD_U', 'LOF', 'M2N2', 'OmniAnomaly', 'POLY', 'SR', 'Sub_HBOS', 'Sub_IForest', 'Sub_KNN', 'Sub_LOF', 'Sub_OCSVM', 'Sub_PCA', 'TimesNet','USAD']
 dataset_20_methods_name_list = dataset_19_methods_name_list + ['Sub_MCD']
 
 
-# # 19种方法先跑,跑19种全有的,第一次,第二次,第三次文件
 dataset_19_methods_file_list = os.listdir(first_file_path) + os.listdir(second_file_path) + os.listdir(third_file_path)
 
-# # 20种方法先跑,加sub_mcd,跑20种全有的,第一次,第二次文件
 dataset_20_methods_file_list = os.listdir(first_file_path)+os.listdir(second_file_path)
 
 
@@ -163,7 +157,6 @@ for i, data_set_choose_file in enumerate(data_set_choose_file_list):
     dataset_name= data_set_choose_file.split("_")[1]
     # if dataset_name in test_list:
     file_method_metric_dict[data_set_choose_file] = {}
-    # 打开并读取 JSON 文件
     data_set_choose_file_path = file_path_dict[data_set_choose_file]
     with open(data_set_choose_file_path, "r", encoding="utf-8") as file:
         data = json.load(file)

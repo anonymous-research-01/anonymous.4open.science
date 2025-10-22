@@ -29,9 +29,6 @@ for file_name in file_list1:
 file_list2 = os.listdir(second_file_path)
 for file_name in file_list2:
     file_path_dict[file_name] = second_file_path+file_name
-file_list3 = os.listdir(third_file_path)
-for file_name in file_list3:
-    file_path_dict[file_name] = third_file_path+file_name
 
 
 

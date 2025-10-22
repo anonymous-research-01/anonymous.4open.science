@@ -8,61 +8,6 @@ from utils_Synthetic_exp import evaluate_all_metrics, synthetic_generator, evalu
 from config.meata_config import parameter_dict
 
 
-# label list
-def plotFigures_systhetic_data(label_ranges, label_array_list, file_name="figure",
-                               show_pic=True, slidingWindow=100, forecasting_len=3, delay_len=3, color_box=0.4,
-                               plotRange=None, save_plot=False,
-                               plot_1_name='Real Data', plot_2_name='Perfect Model', plot_3_name='Model 1 (MVN)',
-                               plot_4_name='Model 2 (AE)', plot_5_name='Random Score'):
-    range_anomaly = label_ranges[0]
-
-    score = label_array_list[0]
-
-    max_length = len(score)
-    if plotRange is None:
-        plotRange = [0, max_length]
-
-    # fig3 = plt.figure(figsize=(10, 5), constrained_layout=True)
-    fig3 = plt.figure(figsize=(15, 10), constrained_layout=True)
-    gs = fig3.add_gridspec(len(label_array_list), 1)  # Adjusted grid for 5 rows
-
-    # Function to plot each anomaly score
-    def plot_anomaly_score(ax, score, label_text):
-        # ax.plot(score[:max_length])
-        ax.step(range(len(score)), score, where='post')
-
-        for r in range_anomaly:
-            ax.axvspan(r[0], r[1] + 1, color='red', alpha=color_box)
-            # ax.axvspan(r[0]-forecasting_len, r[0], color='green', alpha=color_box)
-            # ax.axvspan(r[1], r[1]+delay_len, color='green', alpha=color_box)
-        ax.set_ylabel('score')
-        ax.set_xlim(plotRange)
-        ax.text(0.02, 0.90, label_text, transform=ax.transAxes, fontsize=12, verticalalignment='top',
-                bbox=dict(boxstyle='round,pad=0.3', edgecolor='black', facecolor='white'))
-
-    # Plotting the anomaly scores in separate subplots
-    for i, label_array in enumerate(label_array_list):
-        f3_ax1 = fig3.add_subplot(gs[i, 0])
-        if i == 0:
-            single_name = "GT"
-        else:
-            single_name = "pred" + i.__str__()
-        plot_anomaly_score(f3_ax1, label_array, single_name)
-
-    save_path_svg = "paper/src/figures/" + file_name + ".svg"
-    save_path_pdf = "paper/src/figures/" + file_name + ".pdf"
-    save_path_png = "paper/src/figures/" + file_name + ".png"
-    # plt.savefig(save_path_svg, format='svg')
-    # 保存为 PDF 文件
-    plt.savefig(save_path_pdf, format="pdf", bbox_inches="tight")
-    plt.savefig(save_path_png)
-
-    if show_pic:
-        plt.show()
-
-    return fig3
-
-
 paint_name_list = [
     'VUS_ROC',
     'VUS_PR',
