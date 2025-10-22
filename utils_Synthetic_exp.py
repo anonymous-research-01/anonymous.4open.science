@@ -17,17 +17,6 @@ project_root = os.path.dirname(os.path.dirname(current_dir))  # Two levels up
 sys.path.append(project_root)
 
 
-from sklearn.metrics import f1_score
-from metrics.f1_score_f1_pa import * # used for PA-F1
-from metrics.AUC import * # Range AUC
-from metrics.affiliation.generics import convert_vector_to_events  #Affiliation
-from metrics.affiliation.metrics import pr_from_events #Affiliation
-from metrics.vus.models.feature import Window #VUS
-from metrics.vus.metrics import get_range_vus_roc #VUS
-from metrics.eTaPR_pkg import *
-from metrics.eTaPR_pkg import f1_score_etapr
-from metrics.AUCs_Compute import *
-from metrics.Range_Based_PR import *
 from metrics.metrics_pa import PointAdjustKPercent
 
 from pate.PATE_metric import PATE
