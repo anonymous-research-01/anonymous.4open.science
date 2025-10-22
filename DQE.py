@@ -1638,348 +1638,80 @@ def DQE(y_true, y_score, output, parameter_dict=parameter_dict, max_ia_distant_l
     local_f1_matrix_np = np.array(local_f1_matrix)
     local_near_fq_matrix_np = np.array(local_near_fq_matrix)
     local_distant_fq_matrix_np = np.array(local_distant_fq_matrix)
-    gt_detection_list_np = np.array(gt_detection_list)
 
     parameter_w_gt = parameter_dict["parameter_w_gt"]
     parameter_w_near_ngt = parameter_dict["parameter_w_near_ngt"]
 
-    # auc_type = "row_auc_add"
     row_mean_recall_list = []
     row_mean_precision_list = []
 
     row_mean_near_fp_list = []
     row_mean_distant_fp_list = []
 
-    gt_detection_mean = np.mean(gt_detection_list_np)
-
-    # auc_type = "auc_add_row"
-    local_tq_auc_pr_list = []
-
-    col_local_f1_mean_list = []
-    col_local_f1_add_mean_list = []
     row_local_f1_list = []
-
-    local_meata_list = []
-    local_meata_list_w_gt = []
-    local_meata_list_w_near_ngt = []
-    local_meata_list_w_distant_ngt = []
-
-    f1_type = "mean_pr_f1"
-
-    auc_type = "row_add_auc"
-
-    detection_rate_method = "row"
-
 
     # weigh_sum_method = "equal"
     weigh_sum_method = "triangle"
 
+    for i, threshold in enumerate(thresholds):
+        if threshold <=0:
+            continue
+        row_mean_near_fq = np.mean(local_near_fq_matrix_np[i])
+        row_mean_distant_fq = np.mean(local_distant_fq_matrix_np[i])
 
-    # if auc_type == "row_auc_add":
-    if auc_type.split("_")[0] == "row":
-        # 这个可以放到最后一个for循环
-        for i, threshold in enumerate(thresholds):
-            if threshold <=0:
-                continue
-            row_mean_near_fq = np.mean(local_near_fq_matrix_np[i])
-            row_mean_distant_fq = np.mean(local_distant_fq_matrix_np[i])
-            if detection_rate_method == "row":
-                row_mean_recall = np.mean(local_recall_matrix_np[i])*gt_detection_list[i]
-                row_mean_precision = np.mean(local_precision_matrix_np[i])*gt_detection_list[i]
-            elif detection_rate_method == "global":
-                row_mean_recall = np.mean(local_recall_matrix_np[i])
-                row_mean_precision = np.mean(local_precision_matrix_np[i])
-            else:
-                row_mean_recall = np.mean(local_recall_matrix_np[i])
-                row_mean_precision = np.mean(local_precision_matrix_np[i])
-            row_mean_recall_list.append(row_mean_recall)
-            row_mean_precision_list.append(row_mean_precision)
+        row_mean_recall = np.mean(local_recall_matrix_np[i])*gt_detection_list[i]
+        row_mean_precision = np.mean(local_precision_matrix_np[i])*gt_detection_list[i]
 
-            row_mean_near_fp_list.append(row_mean_near_fq)
-            row_mean_distant_fp_list.append(row_mean_distant_fq)
+        row_mean_recall_list.append(row_mean_recall)
+        row_mean_precision_list.append(row_mean_precision)
 
-            if f1_type == "mean_pr_f1":
-                row_local_f1 = compute_f1_score(row_mean_precision,row_mean_recall)
-            else:
-                row_local_f1_np = local_f1_matrix_np[i]
-                row_local_f1 = np.mean(row_local_f1_np)
-            row_local_f1_list.append(row_local_f1)
+        row_mean_near_fp_list.append(row_mean_near_fq)
+        row_mean_distant_fp_list.append(row_mean_distant_fq)
 
-        row_mean_recall_np = np.array(row_mean_recall_list)
-        row_mean_precision_np = np.array(row_mean_precision_list)
+        row_local_f1 = compute_f1_score(row_mean_precision,row_mean_recall)
 
-        row_local_f1_list_np = np.array(row_local_f1_list)
+        row_local_f1_list.append(row_local_f1)
+
+    row_local_f1_list_np = np.array(row_local_f1_list)
 
 
+    local_meata_value_list = []
+    local_meata_value_list_w_gt = []
+    local_meata_value_list_w_near_ngt = []
+    local_meata_value_list_w_distant_ngt = []
+    for j, threshold in enumerate(thresholds):
+        if threshold<=0:
+            continue
+        row_mean_f1_value = row_local_f1_list_np[j]
+        row_mean_near_fp_value = row_mean_near_fp_list[j]
+        row_mean_distant_fp_value = row_mean_distant_fp_list[j]
+        local_meata_value = cal_dqe_row(parameter_w_gt, parameter_w_near_ngt, row_mean_distant_fp_value,
+                                        row_mean_f1_value, row_mean_near_fp_value)
+        local_meata_value_w_gt = cal_dqe_row(1, 0, row_mean_distant_fp_value,row_mean_f1_value, row_mean_near_fp_value)
+        local_meata_value_w_near_ngt = cal_dqe_row(0, 1, row_mean_distant_fp_value,row_mean_f1_value, row_mean_near_fp_value)
+        local_meata_value_w_distant_ngt = cal_dqe_row(0, 0, row_mean_distant_fp_value,row_mean_f1_value, row_mean_near_fp_value)
 
-        if auc_type == "row_auc_add":  # row_col_add
-
-            pr_auc = auc(row_mean_recall_np, row_mean_precision_np)
-
-            if weigh_sum_method == "equal":
-                row_f1 = np.mean(row_local_f1_list_np)
-            else:
-                row_f1 = triangle_weights_add(thresh_num-2,row_local_f1_list_np)
-
-
-
-
-
-            mean_local_near_fq = np.mean(local_near_fq_matrix_np)
-            mean_distant_fq = np.mean(local_distant_fq_matrix_np)
-            gt_detection_mean = np.mean(gt_detection_list_np)
-            if detection_rate_method == "row":
-                tq_auc_pr_final = pr_auc
-                row_f1_final = row_f1
-            elif detection_rate_method == "global":
-                tq_auc_pr_final = pr_auc*gt_detection_mean
-                row_f1_final = row_f1*gt_detection_mean
-            else:
-                tq_auc_pr_final = pr_auc
-                row_f1_final = row_f1
-
-            meata = cal_dqe(mean_distant_fq, mean_local_near_fq, parameter_w_gt, parameter_w_near_ngt, row_f1_final)
-            meata_w_gt = cal_dqe(mean_distant_fq, mean_local_near_fq, 1, 0, row_f1_final)
-            meata_w_near_ngt = cal_dqe(mean_distant_fq, mean_local_near_fq, 0, 1, row_f1_final)
-            meata_w_distant_ngt = cal_dqe(mean_distant_fq, mean_local_near_fq, 0, 0, row_f1_final)
-        else: # auc_type == "row_add_auc"
-            local_meata_value_list = []
-            local_meata_value_list_w_gt = []
-            local_meata_value_list_w_near_ngt = []
-            local_meata_value_list_w_distant_ngt = []
-            for j, threshold in enumerate(thresholds):
-                if threshold<=0:
-                    continue
-                row_mean_f1_value = row_local_f1_list_np[j]
-                row_mean_near_fp_value = row_mean_near_fp_list[j]
-                row_mean_distant_fp_value = row_mean_distant_fp_list[j]
-                local_meata_value = cal_dqe_row(parameter_w_gt, parameter_w_near_ngt, row_mean_distant_fp_value,
-                                                row_mean_f1_value, row_mean_near_fp_value)
-                local_meata_value_w_gt = cal_dqe_row(1, 0, row_mean_distant_fp_value,row_mean_f1_value, row_mean_near_fp_value)
-                local_meata_value_w_near_ngt = cal_dqe_row(0, 1, row_mean_distant_fp_value,row_mean_f1_value, row_mean_near_fp_value)
-                local_meata_value_w_distant_ngt = cal_dqe_row(0, 0, row_mean_distant_fp_value,row_mean_f1_value, row_mean_near_fp_value)
-
-                local_meata_value_list.append(local_meata_value)
-                local_meata_value_list_w_gt.append(local_meata_value_w_gt)
-                local_meata_value_list_w_near_ngt.append(local_meata_value_w_near_ngt)
-                local_meata_value_list_w_distant_ngt.append(local_meata_value_w_distant_ngt)
+        local_meata_value_list.append(local_meata_value)
+        local_meata_value_list_w_gt.append(local_meata_value_w_gt)
+        local_meata_value_list_w_near_ngt.append(local_meata_value_w_near_ngt)
+        local_meata_value_list_w_distant_ngt.append(local_meata_value_w_distant_ngt)
 
 
-            if weigh_sum_method == "equal":
+    if weigh_sum_method == "equal":
 
-                meata = np.mean(local_meata_value_list)
-                meata_w_gt = np.mean(local_meata_value_list_w_gt)
-                meata_w_near_ngt = np.mean(local_meata_value_list_w_near_ngt)
-                meata_w_distant_ngt = np.mean(local_meata_value_list_w_distant_ngt)
-            else:
+        meata = np.mean(local_meata_value_list)
+        meata_w_gt = np.mean(local_meata_value_list_w_gt)
+        meata_w_near_ngt = np.mean(local_meata_value_list_w_near_ngt)
+        meata_w_distant_ngt = np.mean(local_meata_value_list_w_distant_ngt)
+    else:
 
-                meata, triangle_weights = triangle_weights_add_v1(thresholds[:-1], np.array(local_meata_value_list))
-                meata_w_gt, _ = triangle_weights_add_v1(thresholds[:-1], np.array(local_meata_value_list_w_gt))
-                meata_w_near_ngt, _ = triangle_weights_add_v1(thresholds[:-1], np.array(local_meata_value_list_w_near_ngt))
-                meata_w_distant_ngt, _ = triangle_weights_add_v1(thresholds[:-1],
-                                                              np.array(local_meata_value_list_w_distant_ngt))
-
-
-
-    elif auc_type.split("_")[0] == "auc":
-        for i in range(gt_num):
-            col_local_recall = local_recall_matrix_np[:-1, i]
-            col_local_precision = local_precision_matrix_np[:-1, i]
-            col_local_f1 = local_f1_matrix_np[:-1, i]
-
-            local_tq_auc_pr = clean_and_compute_auc_pr(col_local_recall, col_local_precision)
-            local_tq_auc_pr1 = auc(col_local_recall, col_local_precision)
-            
-            if f1_type == "mean_pr_f1":
-                if weigh_sum_method == "equal":
-                    col_local_recall_mean = np.mean(col_local_recall)
-                    col_local_precision_mean = np.mean(col_local_precision)
-                else:
-                    col_local_recall_mean = triangle_weights_add(thresh_num-2,col_local_recall)
-                    col_local_precision_mean = triangle_weights_add(thresh_num-2,col_local_precision)
-
-                col_local_f1_mean = compute_f1_score(col_local_precision_mean,col_local_recall_mean)
-            else: # f1_type == "mean_f1"
-                if weigh_sum_method == "equal":
-                    col_local_f1_mean = np.mean(col_local_f1)
-                else:
-                    col_local_f1_mean = triangle_weights_add(thresh_num-1,col_local_f1)
+        meata, triangle_weights = triangle_weights_add_v1(thresholds[:-1], np.array(local_meata_value_list))
+        meata_w_gt, _ = triangle_weights_add_v1(thresholds[:-1], np.array(local_meata_value_list_w_gt))
+        meata_w_near_ngt, _ = triangle_weights_add_v1(thresholds[:-1], np.array(local_meata_value_list_w_near_ngt))
+        meata_w_distant_ngt, _ = triangle_weights_add_v1(thresholds[:-1],
+                                                      np.array(local_meata_value_list_w_distant_ngt))
 
 
-
-
-            idx = np.where(col_local_recall >= 1)[0]
-            first_pos = idx[0] if idx.size else None
-
-            print()
-            print("local_tq_auc_pr",local_tq_auc_pr)
-            print("local_tq_auc_pr1",local_tq_auc_pr1)
-            print("col_local_f1_mean",col_local_f1_mean)
-            print("first_pos",first_pos)
-
-
-            if auc_type == "auc_row_add":
-                if detection_rate_method == "row":
-                    local_tq_auc_pr_new = gt_detection_mean * local_tq_auc_pr
-                    col_local_f1_mean_new = gt_detection_mean * col_local_f1_mean
-                elif detection_rate_method == "global":
-                    local_tq_auc_pr_new = local_tq_auc_pr
-                    col_local_f1_mean_new = col_local_f1_mean
-                else:
-                    local_tq_auc_pr_new = local_tq_auc_pr
-                    col_local_f1_mean_new = col_local_f1_mean
-                local_tq_auc_pr_list.append(local_tq_auc_pr_new)
-                col_local_f1_mean_list.append(col_local_f1_mean_new)
-            else:
-                # if auc_type == "auc_add_row":
-                if detection_rate_method == "row":
-                    local_tq_auc_pr_new = gt_detection_mean * local_tq_auc_pr
-                    col_local_f1_mean_new = gt_detection_mean * col_local_f1_mean
-                elif detection_rate_method == "global": # 没有这种情况
-                    local_tq_auc_pr_new = local_tq_auc_pr
-                    col_local_f1_mean_new = col_local_f1_mean
-                else:
-                    local_tq_auc_pr_new = local_tq_auc_pr
-                    col_local_f1_mean_new = col_local_f1_mean
-
-                col_mean_local_near_fq = np.mean(local_near_fq_matrix_np[:, i])
-                col_mean_distant_fq = np.mean(local_distant_fq_matrix_np[:, i])
-
-                local_meata = cal_meata_auc_add_row(col_mean_distant_fq, col_mean_local_near_fq, col_local_f1_mean_new,
-                                                    parameter_w_gt, parameter_w_near_ngt)
-                local_meata_w_gt = cal_meata_auc_add_row(col_mean_distant_fq, col_mean_local_near_fq,
-                                                         col_local_f1_mean_new,
-                                                         1, 0)
-                local_meata_w_near_ngt = cal_meata_auc_add_row(col_mean_distant_fq, col_mean_local_near_fq,
-                                                               col_local_f1_mean_new,
-                                                               0, 1)
-                local_meata_w_distant_ngt = cal_meata_auc_add_row(col_mean_distant_fq, col_mean_local_near_fq,
-                                                                  col_local_f1_mean_new,
-                                                                  0, 0)
-                
-                
-                local_meata_list.append(local_meata)
-
-                local_meata_list_w_gt.append(local_meata_w_gt)
-                local_meata_list_w_near_ngt.append(local_meata_w_near_ngt)
-                local_meata_list_w_distant_ngt.append(local_meata_w_distant_ngt)
-        # auc_type = "auc_row_add"
-        if auc_type == "auc_row_add":
-            mean_tq_auc = np.mean(np.array(local_tq_auc_pr_list))
-            mean_f1 = np.mean(np.array(col_local_f1_mean_list))
-            gt_detection_mean = np.mean(gt_detection_list_np)
-
-            mean_local_near_fq = np.mean(local_near_fq_matrix_np)
-            mean_distant_fq = np.mean(local_distant_fq_matrix_np)
-            if detection_rate_method == "row":
-                tq_auc_pr_final = mean_tq_auc
-                mean_f1_final = mean_f1
-            elif detection_rate_method == "global":
-                tq_auc_pr_final = mean_tq_auc * gt_detection_mean
-                mean_f1_final = mean_f1 * gt_detection_mean
-            else:
-                tq_auc_pr_final = mean_tq_auc
-                mean_f1_final = mean_f1
-
-            meata = cal_meata_auc_row_add(mean_distant_fq, mean_local_near_fq, parameter_w_gt, parameter_w_near_ngt,
-                                          mean_f1_final)
-            meata_w_gt = cal_meata_auc_row_add(mean_distant_fq, mean_local_near_fq, 1, 0,mean_f1_final)
-            meata_w_near_ngt = cal_meata_auc_row_add(mean_distant_fq, mean_local_near_fq, 0, 1,mean_f1_final)
-            meata_w_distant_ngt = cal_meata_auc_row_add(mean_distant_fq, mean_local_near_fq, 0, 0,mean_f1_final)
-            a = 1
-        # auc_type = "auc_add_row"
-        else:
-            meata = np.mean(np.array(local_meata_list))
-            meata_w_gt = np.mean(np.array(local_meata_list_w_gt))
-            meata_w_near_ngt = np.mean(np.array(local_meata_list_w_near_ngt))
-            meata_w_distant_ngt = np.mean(np.array(local_meata_list_w_distant_ngt))
-    else: # auc_type.split("_")[0] == "add"
-        local_f1_add_fp_matrix = copy.deepcopy(local_f1_matrix_np)
-        local_f1_add_fp_matrix_w_gt = copy.deepcopy(local_f1_matrix_np)
-        local_f1_add_fp_matrix_w_near_ngt = copy.deepcopy(local_f1_matrix_np)
-        local_f1_add_fp_matrix_w_distant_ngt = copy.deepcopy(local_f1_matrix_np)
-        for id_thresh, threshold in enumerate(thresholds):
-            if threshold <= 0:
-                continue
-
-            for id_gt in range(gt_num):
-                if detection_rate_method == "row":
-                    gt_detection_rate = gt_detection_list[id_gt]
-                elif detection_rate_method == "global":
-                    gt_detection_rate = gt_detection_mean
-
-                else:
-                    gt_detection_rate = 1
-                cal_local_meata_value(gt_detection_rate, id_gt, id_thresh, local_distant_fq_matrix_np,
-                                      local_f1_add_fp_matrix, local_f1_matrix_np, local_near_fq_matrix_np,
-                                      parameter_w_gt, parameter_w_near_ngt)
-                cal_local_meata_value(gt_detection_rate, id_gt, id_thresh, local_distant_fq_matrix_np,
-                                      local_f1_add_fp_matrix_w_gt, local_f1_matrix_np, local_near_fq_matrix_np,
-                                      1, 0)
-                cal_local_meata_value(gt_detection_rate, id_gt, id_thresh, local_distant_fq_matrix_np,
-                                      local_f1_add_fp_matrix_w_near_ngt, local_f1_matrix_np, local_near_fq_matrix_np,
-                                      0, 1)
-                cal_local_meata_value(gt_detection_rate, id_gt, id_thresh, local_distant_fq_matrix_np,
-                                      local_f1_add_fp_matrix_w_distant_ngt, local_f1_matrix_np, local_near_fq_matrix_np,
-                                      0, 0)
-
-        if auc_type == "add_row_auc":
-            row_mean_meata_list = []
-            row_mean_meata_list_w_gt = []
-            row_mean_meata_list_w_near_ngt = []
-            row_mean_meata_list_w_distant_ngt = []
-            for id_thresh, threshold in enumerate(thresholds):
-                if threshold <=0:
-                    continue
-                row_mean_meata = np.mean(local_f1_add_fp_matrix[id_thresh])
-                row_mean_meata_w_gt = np.mean(local_f1_add_fp_matrix_w_gt[id_thresh])
-                row_mean_meata_w_near_ngt = np.mean(local_f1_add_fp_matrix_w_near_ngt[id_thresh])
-                row_mean_meata_w_distant_ngt = np.mean(local_f1_add_fp_matrix_w_distant_ngt[id_thresh])
-
-                row_mean_meata_list.append(row_mean_meata)
-                row_mean_meata_list_w_gt.append(row_mean_meata_w_gt)
-                row_mean_meata_list_w_near_ngt.append(row_mean_meata_w_near_ngt)
-                row_mean_meata_list_w_distant_ngt.append(row_mean_meata_w_distant_ngt)
-            
-            if weigh_sum_method == "equal":
-                meata = np.mean(row_mean_meata_list)
-                meata_w_gt = np.mean(row_mean_meata_list_w_gt)
-                meata_w_near_ngt = np.mean(row_mean_meata_list_w_near_ngt)
-                meata_w_distant_ngt = np.mean(row_mean_meata_list_w_distant_ngt)
-            else:
-                meata = triangle_weights_add(thresh_num-2,np.array(row_mean_meata_list))
-                meata_w_gt = triangle_weights_add(thresh_num-2,np.array(row_mean_meata_list_w_gt))
-                meata_w_near_ngt = triangle_weights_add(thresh_num-2,np.array(row_mean_meata_list_w_near_ngt))
-                meata_w_distant_ngt = triangle_weights_add(thresh_num-2,np.array(row_mean_meata_list_w_distant_ngt))
-
-        else: # auc_type == "add_auc_row"
-            col_mean_meata_list = []
-            col_mean_meata_list_w_gt = []
-            col_mean_meata_list_w_near_ngt = []
-            col_mean_meata_list_w_distant_ngt = []
-            for id_gt in range(gt_num):
-                if weigh_sum_method == "equal":
-                    col_mean_meata = np.mean(local_f1_add_fp_matrix[:-1,id_gt])
-                    col_mean_meata_w_gt = np.mean(local_f1_add_fp_matrix_w_gt[:-1,id_gt])
-                    col_mean_meata_w_near_ngt = np.mean(local_f1_add_fp_matrix_w_near_ngt[:-1,id_gt])
-                    col_mean_meata_w_distant_ngt = np.mean(local_f1_add_fp_matrix_w_distant_ngt[:-1,id_gt])
-                else:
-                    col_mean_meata = triangle_weights_add(thresh_num - 2, local_f1_add_fp_matrix[:-1,id_gt])
-                    col_mean_meata_w_gt = triangle_weights_add(thresh_num - 2, local_f1_add_fp_matrix_w_gt[:-1,id_gt])
-                    col_mean_meata_w_near_ngt = triangle_weights_add(thresh_num - 2, local_f1_add_fp_matrix_w_near_ngt[:-1,id_gt])
-                    col_mean_meata_w_distant_ngt = triangle_weights_add(thresh_num - 2,
-                                                               local_f1_add_fp_matrix_w_distant_ngt[:-1,id_gt])
-                col_mean_meata_list.append(col_mean_meata)
-                col_mean_meata_list_w_gt.append(col_mean_meata_w_gt)
-                col_mean_meata_list_w_near_ngt.append(col_mean_meata_w_near_ngt)
-                col_mean_meata_list_w_distant_ngt.append(col_mean_meata_w_distant_ngt)
-
-            meata = np.mean(col_mean_meata_list)
-            meata_w_gt = np.mean(col_mean_meata_list_w_gt)
-            meata_w_near_ngt = np.mean(col_mean_meata_list_w_near_ngt)
-            meata_w_distant_ngt = np.mean(col_mean_meata_list_w_distant_ngt)
-
-    # final_meata = no_random_coefficient*meata
     final_meata = meata
 
     if print_msg:
