@@ -100,13 +100,6 @@ if __name__ == '__main__':
                 print(" all method time_end - time_start",time_end - time_start)
             file_method_metric_dict[data_set_choose_file][dataset_methods_choose_name] = metric_score_dict
 
-    # res_seve_path = res_save_dir + "metric_calc_res_" + choose_method_num+".json"
-    #
-    # with open(res_seve_path, 'w', encoding='utf-8') as json_file:
-    #     json.dump(file_method_metric_dict, json_file, indent=4, ensure_ascii=False)
-    #
-    # print(f"write to {res_seve_path}")
-
     # cal mean res
     print("len(file_method_metric_dict)", len(file_method_metric_dict))
 
@@ -257,16 +250,6 @@ if __name__ == '__main__':
             mean_score = np.array(score_list).mean()
             metric_score_list_dict[metric_name][method_name]["mean_score"] = mean_score
 
-            # # cal range
-            # max_score = np.array(score_list).max()
-            # min_score = np.array(score_list).min()
-            # median_score = np.median(score_list)
-            #
-            # metric_score_list_dict[metric_name][method_name]["max_score"] = float(max_score)
-            # metric_score_list_dict[metric_name][method_name]["min_score"] = float(min_score)
-            # metric_score_list_dict[metric_name][method_name]["median_score"] = float(median_score)
-            # metric_score_list_dict[metric_name][method_name]["score_range"] = float(max_score - min_score)
-
     # creating rankings by sort for single dataset
     dataset_name_score_list_dict_sort = copy.deepcopy(
         dataset_name_score_list_dict)  # copy structure and change dict item
@@ -279,10 +262,6 @@ if __name__ == '__main__':
                 method_score_dict_list.append({"method_name": method_name,
                                                "method_index": method_name_index_dict[method_name],
                                                "mean_score": method_score_res_dict["mean_score"],
-                                               # "max_score":method_score_res_dict["max_score"],
-                                               # "min_score":method_score_res_dict["min_score"],
-                                               # "median_score":method_score_res_dict["median_score"],
-                                               # "score_range":method_score_res_dict["score_range"],
                                                })
             method_score_dict_list_sorted = sorted(method_score_dict_list, key=lambda x: x["mean_score"], reverse=True)
 
@@ -298,10 +277,6 @@ if __name__ == '__main__':
             method_score_dict_list.append({"method_name": method_name,
                                            "method_index": method_name_index_dict[method_name],
                                            "mean_score": method_score_res_dict["mean_score"],
-                                           # "max_score": method_score_res_dict["max_score"],
-                                           # "min_score": method_score_res_dict["min_score"],
-                                           # "median_score": method_score_res_dict["median_score"],
-                                           # "score_range": method_score_res_dict["score_range"],
                                            })
         method_score_dict_list_sorted = sorted(method_score_dict_list, key=lambda x: x["mean_score"], reverse=True)
 
@@ -373,19 +348,16 @@ if __name__ == '__main__':
     def custom_json_formatter(data, indent=4):
         def _format(value, level=0):
             if isinstance(value, list):
-                # 如果是列表，横向对齐每个元素
                 elements = [json.dumps(item, ensure_ascii=False) for item in value]
                 max_length = max(len(item) for item in elements)  # 计算最长的元素长度
                 formatted_elements = ", ".join(item.ljust(max_length) for item in elements)  # 横向对齐元素
                 return f"[{formatted_elements}]"
             elif isinstance(value, dict):
-                # 如果是字典，递归处理
                 lines = []
                 for key, val in value.items():
                     lines.append(" " * (indent * level) + f'"{key}": {(_format(val, level + 1))}')
                 return "{\n" + ",\n".join(lines) + "\n" + " " * (indent * (level - 1)) + "}"
             else:
-                # 其他类型直接返回字符串形式
                 return json.dumps(value, ensure_ascii=False)
 
         return _format(data)

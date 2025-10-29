@@ -316,7 +316,6 @@ class basic_metricor():
             eTaPR_F1 = max(eTaPR_f1_score_list)
 
         else:
-            # preds_int = preds.astype(int)
             if not np.any(preds):
                 eTaPR_precision, eTaPR_recall, eTaPR_F1 = 0.0, 0.0, 0.0
             else:
@@ -329,7 +328,6 @@ class basic_metricor():
 
     def metric_DQE(self, label, score, preds=None, parameter_dict=parameter_dict):
         if preds is not None:
-            # dqe, dqe_w_tq, dqe_w_fq_near, _w_fq_distant, dqe_w_fq = DQE(label,
             dqe, dqe_w_tq, dqe_w_fq_near, dqe_w_fq_distant = DQE(label,
                                                                  preds,
                                                                  parameter_dict=parameter_dict,
@@ -337,7 +335,6 @@ class basic_metricor():
                                                                  )
 
         else:
-            # dqe, dqe_w_tq, dqe_w_fq_near, _w_fq_distant, dqe_w_fq = DQE(label,
             dqe, dqe_w_tq, dqe_w_fq_near, dqe_w_fq_distant = DQE(label,
                                                                  score,
                                                                  parameter_dict=parameter_dict,

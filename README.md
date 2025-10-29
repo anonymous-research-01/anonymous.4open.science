@@ -67,6 +67,7 @@ dqe = DQE(labels, scores)
 ```python 
 import numpy as np
 from DQE.DQE import DQE
+
 # Example data setup
 labels = np.array([0, 1, 0, 1, 0])
 scores = np.array([0.1, 0.8, 0.1, 0.9, 0.2])
@@ -116,7 +117,7 @@ This script allows for the modification of various scenarios, comparing DQE agai
 
 
 ```bash
-python main_synthetic_data_exp.py --exp_name "over-counting tp"
+python synthetic_data_exp.py --exp_name "over-counting tp"
 ```
 
 The parameter exp_name can be set in ["over-counting tp", "tp timeliness","fp proximity", "fp insensitivity or overevaluation of duration", "fp duration overevaluation (af)"].

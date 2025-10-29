@@ -7,12 +7,9 @@ from config.dqe_config import parameter_dict
 
 
 
-def get_metrics(score, labels, slidingWindow=100, pred=None, version='opt', thre=250,print_msg=True,test_time=True):
+def get_metrics(score, labels, slidingWindow=100, pred=None, version='opt', thre=250,print_msg=False,test_time=False):
     metrics = {}
-    case_analyze = [
-        "DQE",
-        # "PA-K"
-    ]
+
     th_100_exp_list = [
     'Standard-F1',
     'AUC-ROC',
@@ -87,7 +84,6 @@ def get_metrics(score, labels, slidingWindow=100, pred=None, version='opt', thre
             time_start = time.time()
         parameter_dict_adapt = copy.deepcopy(parameter_dict)
         parameter_dict_adapt["near_single_side_range"] = slidingWindow
-        # dqe,dqe_w_tq,dqe_w_fq_near,dqe_w_fq_distant,dqe_w_fq = grader.metric_DQE(labels, score, preds=pred, parameter_dict=parameter_dict_adapt)
         dqe, dqe_w_tq, dqe_w_fq_near, dqe_w_fq_distant = grader.metric_DQE(labels, score, preds=pred, parameter_dict=parameter_dict_adapt)
         if test_time:
             time_end = time.time()
@@ -97,7 +93,6 @@ def get_metrics(score, labels, slidingWindow=100, pred=None, version='opt', thre
         metrics['dqe_w_tq'] = dqe_w_tq
         metrics['dqe_w_fq_near'] = dqe_w_fq_near
         metrics['dqe_w_fq_distant'] = dqe_w_fq_distant
-        # metrics['dqe_w_fq'] = dqe_res['dqe_w_fq']
 
     '''
     Threshold Dependent

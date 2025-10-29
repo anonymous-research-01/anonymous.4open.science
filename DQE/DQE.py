@@ -341,7 +341,6 @@ def DQE_F1(tq_section_list, prediction_section_list, ts_len, gt_num=None, parame
                     # fq_near_early_i
                     fq_near_e_section_list[i] = [fq_near_e_section_i_start, fq_near_e_section_i_end]
 
-                    # tq_section_list[i] = [tq_section_i_start, tq_section_i_end]
 
                     # next section
                     # fq_near_delay_i_next
@@ -379,15 +378,9 @@ def DQE_F1(tq_section_list, prediction_section_list, ts_len, gt_num=None, parame
                         fq_near_d_section_list[i + 1] = [tq_section_i_end, tq_section_i_end]
 
                         if distant_method == "whole":
-                            # fq_distant_i
-                            # fq_distant_section_list[i] = [0, fq_near_early_section_i_start]
-
                             # next section
                             fq_dis_section_list[i + 1] = [tq_section_i_end, ts_len]
                         else:
-                            # fq_distant_early_i
-                            # fq_distant_early_section_list[i] = [0, fq_distant_section_list[i][1]]
-
                             # next section
                             # fq_distant_delay_i_next
                             fq_dis_d_section_list[i + 1] = [tq_section_i_end, ts_len]
@@ -404,7 +397,6 @@ def DQE_F1(tq_section_list, prediction_section_list, ts_len, gt_num=None, parame
 
                     # fq_near
                     fq_near_e_section_list[i] = [fq_near_e_section_i_start, fq_near_e_section_i_end]
-                    # tq_section_list[i] = [tq_section_i_start, tq_section_i_end]
 
                     # next section
                     fq_near_d_section_list[i + 1] = [fq_near_d_section_i_next_start, fq_near_d_section_i_next_end]
@@ -426,11 +418,6 @@ def DQE_F1(tq_section_list, prediction_section_list, ts_len, gt_num=None, parame
                             fq_dis_e_section_list[i] = [0, tq_section_i_start]
                     if weight_fq_near_delay <= 0:
                         fq_near_d_section_list[i + 1] = [tq_section_i_end, tq_section_i_end]
-                        # if distant_method == "whole":
-                        #     pass
-                        # fq_distant_section_list[i] = [0, fq_near_early_section_i_start]
-                        # else:
-                        # fq_distant_early_section_list[i] = [0, fq_near_early_section_i_start]
             elif i == gt_num - 1:
                 # get position
                 tq_section_i_last_start, tq_section_i_last_end = tq_section_list[i - 1]
@@ -445,7 +432,6 @@ def DQE_F1(tq_section_list, prediction_section_list, ts_len, gt_num=None, parame
 
                 # fq_near
                 fq_near_e_section_list[i] = [fq_near_e_section_i_start, fq_near_e_section_i_end]
-                # tq_section_list[i] = [tq_section_i_start, tq_section_i_end]
                 fq_near_d_section_list[i + 1] = [fq_near_d_section_i_next_start, fq_near_d_section_i_next_end]
 
                 # fq_distant
@@ -499,7 +485,6 @@ def DQE_F1(tq_section_list, prediction_section_list, ts_len, gt_num=None, parame
 
                 # fq_near
                 fq_near_e_section_list[i] = [fq_near_e_section_i_start, fq_near_e_section_i_end]
-                # tq_section_list[i] = [tq_section_i_start, tq_section_i_end]
                 fq_near_d_section_list[i + 1] = [fq_near_d_section_i_next_start, fq_near_d_section_i_next_end]
 
                 # fq_distant
@@ -531,13 +516,11 @@ def DQE_F1(tq_section_list, prediction_section_list, ts_len, gt_num=None, parame
             # add split line
             if weight_fq_near_early > 0:
                 split_line_set.add(fq_near_e_section_i_start)
-                # split_line_set.add(fq_near_early_section_i_end)
 
             split_line_set.add(tq_section_i_start)
             split_line_set.add(tq_section_i_end)
 
             if weight_fq_near_delay > 0:
-                # split_line_set.add(fq_near_delay_section_i_next_start)
                 split_line_set.add(fq_near_d_section_i_next_end)
 
             if distant_method == "split":
@@ -580,7 +563,6 @@ def DQE_F1(tq_section_list, prediction_section_list, ts_len, gt_num=None, parame
         fq_dis_d_prediction_group_list = [[] for _ in range(gt_num + 1)]
 
     # get local prediction event group (third circle,prediction_event_num*gt_num*4)
-    # for i in
     for i, basic_interval in enumerate(prediction_events):
         # tq_group
         for j, area in enumerate(tq_section_list):
@@ -629,22 +611,15 @@ def DQE_F1(tq_section_list, prediction_section_list, ts_len, gt_num=None, parame
 
     # fq_near_early
     # total duration
-    # td_fq_near_e_list = [[] for _ in range(gt_num)]
     td_fq_near_e_list = np.arange(gt_num, dtype=np.float64)
     # mean proximity
-    # mp_fq_near_e_list = [[] for _ in range(gt_num)]
     mp_fq_near_e_list = np.arange(gt_num, dtype=np.float64)
     # closest_onset
-    # co_fq_near_e_list = [[] for _ in range(gt_num)]
     co_fq_near_e_list = np.arange(gt_num, dtype=np.float64)
-    # fq_near_e_score_list = [[] for _ in range(gt_num)]
+
     fq_near_e_score_list = np.arange(gt_num, dtype=np.float64)
 
     # fq_near_delay
-    # td_fq_near_d_list = [[] for _ in range(gt_num+1)]
-    # mp_fq_near_d_list = [[] for _ in range(gt_num+1)]
-    # co_fq_near_d_list = [[] for _ in range(gt_num+1)]
-    # fq_near_d_score_list = [[] for _ in range(gt_num+1)]
 
     td_fq_near_d_list = np.arange(gt_num + 1, dtype=np.float64)
     mp_fq_near_d_list = np.arange(gt_num + 1, dtype=np.float64)
@@ -653,7 +628,6 @@ def DQE_F1(tq_section_list, prediction_section_list, ts_len, gt_num=None, parame
 
     # cal score function,tq_near score
     if integral_tq_section_res is not None:
-        # tq_precision_integral_list = partition_res["tq_precision_integral_list"]
         tq_recall_integral_list = integral_tq_section_res["tq_recall_integral_list"]
 
         func_parameter_list_precision_tq = integral_tq_section_res["func_parameter_list_precision_tq"]
@@ -688,7 +662,6 @@ def DQE_F1(tq_section_list, prediction_section_list, ts_len, gt_num=None, parame
             mp_fq_near_e = p_fq_near_e_sum / fq_near_e_num if fq_near_e_num != 0 else 0
             mp_fq_near_e_list[i] = mp_fq_near_e
 
-            # co_fq_near_e = co_fq_near_e/fq_near_e_num if fq_near_e_num != 0 else 0
             co_fq_near_e_list[i] = co_fq_near_e
 
             score_fq_near_e_mp = ddl_func(mp_fq_near_e, near_single_side_range,
@@ -761,7 +734,6 @@ def DQE_F1(tq_section_list, prediction_section_list, ts_len, gt_num=None, parame
 
             fq_near_d_score_list[area_id_next] = score_fq_near_d
     else:
-        # tq_precision_integral_list = [[] for _ in range(gt_num)]
         tq_recall_integral_list = [[] for _ in range(gt_num)]
 
         func_parameter_list_precision_tq = [{} for _ in range(gt_num)]
@@ -777,10 +749,6 @@ def DQE_F1(tq_section_list, prediction_section_list, ts_len, gt_num=None, parame
             w_tq_precision = 1 / 2
 
             c_precision = cal_power_function_parameter_b(beta, w_tq_precision, 0, tq_section_len)
-
-            # entire_section_integral_tq_precision = cal_integral_in_range_gt_power_func(area, c_precision, beta, \
-            #                                                        parameter_w_tq=w_tq_precision, \
-            #                                                        area_end=area[1])
 
             entire_section_integral_tq_recall = cal_integral_in_range_gt_power_func(area, a_recall, beta, \
                                                                                     parameter_w_tq=w_tq_recall, \
@@ -806,7 +774,6 @@ def DQE_F1(tq_section_list, prediction_section_list, ts_len, gt_num=None, parame
             func_parameter_list_precision_fq_near[i]["coefficient_early"] = coefficient_early
             func_parameter_list_precision_fq_near[i]["beta_early"] = beta_early
 
-            # tq_precision_integral_list[i] = entire_section_integral_tq_precision
             tq_recall_integral_list[i] = entire_section_integral_tq_recall
 
             # fq_near_early
@@ -835,7 +802,6 @@ def DQE_F1(tq_section_list, prediction_section_list, ts_len, gt_num=None, parame
             mp_fq_near_e = p_fq_near_e_sum / fq_near_e_num if fq_near_e_num != 0 else 0
             mp_fq_near_e_list[i] = mp_fq_near_e
 
-            # co_fq_near_e = co_fq_near_e/fq_near_e_num if fq_near_e_num != 0 else 0
             co_fq_near_e_list[i] = co_fq_near_e
 
             score_fq_near_e_mp = ddl_func(mp_fq_near_e, near_single_side_range,
@@ -930,10 +896,6 @@ def DQE_F1(tq_section_list, prediction_section_list, ts_len, gt_num=None, parame
             print()
             print("max_ia_distant_length", max_fq_distant_len)
 
-        # td_fq_dis_list = [[] for _ in range(gt_num+1)]
-        # mp_fq_dis_list = [[] for _ in range(gt_num+1)]
-        # co_fq_dis_list = [[] for _ in range(gt_num+1)]
-
         td_fq_dis_list = np.arange(gt_num + 1, dtype=np.float64)
         mp_fq_dis_list = np.arange(gt_num + 1, dtype=np.float64)
         co_fq_dis_list = np.arange(gt_num + 1, dtype=np.float64)
@@ -1011,16 +973,6 @@ def DQE_F1(tq_section_list, prediction_section_list, ts_len, gt_num=None, parame
         if print_msg:
             print()
             print("max_ia_distant_length", max_fq_distant_len)
-
-        # td_fq_dis_e_list = [[] for _ in range(gt_num+1)]
-        # mp_fq_dis_e_list = [[] for _ in range(gt_num+1)]
-        # co_fq_dis_e_list = [[] for _ in range(gt_num+1)]
-        # score_fq_dis_e_list = [[] for _ in range(gt_num+1)]
-        #
-        # td_fq_dis_d_list = [[] for _ in range(gt_num+1)]
-        # mp_fq_dis_d_list = [[] for _ in range(gt_num+1)]
-        # co_fq_dis_d_list = [[] for _ in range(gt_num+1)]
-        # score_fq_dis_d_list = [[] for _ in range(gt_num+1)]
 
         td_fq_dis_e_list = np.arange(gt_num + 1, dtype=np.float64)
         mp_fq_dis_e_list = np.arange(gt_num + 1, dtype=np.float64)
@@ -1183,7 +1135,7 @@ def DQE_F1(tq_section_list, prediction_section_list, ts_len, gt_num=None, parame
                 if i == gt_num - 1:
                     if fq_near_e_section_list[i][0] < fq_near_e_section_list[i][1] and \
                             fq_near_d_section_list[area_id_next][0] >= fq_near_d_section_list[area_id_next][
-                        1]:  # 下一个是最后一个,后一个空
+                        1]:
                         fq_near_ratio_early = 1
 
         adjust_ratio_fq_near_e_list[i] = [fq_near_ratio_delay, fq_near_ratio_early]
@@ -1208,7 +1160,7 @@ def DQE_F1(tq_section_list, prediction_section_list, ts_len, gt_num=None, parame
             adjust_score_fq_near_d_list[area_id_next] = 0
 
     if distant_method == "whole":
-        adjust_score_fq_dis_list = deepcopy(score_fq_dis_list)  # 默认
+        adjust_score_fq_dis_list = deepcopy(score_fq_dis_list)
         adjust_score_contribution_fq_dis_list = [[] for _ in range(gt_num + 1)]
         adjust_ratio_fq_dis_list = [[] for _ in range(gt_num + 1)]
     else:
@@ -1281,7 +1233,6 @@ def DQE_F1(tq_section_list, prediction_section_list, ts_len, gt_num=None, parame
                     0] < fq_dis_d_section_list[area_id_next][1]:
                     fq_dis_ratio_early = 0
             elif i == gt_num:
-                # 默认
                 fq_dis_ratio_early = 0
                 if fq_dis_d_section_list[i][0] >= fq_dis_d_section_list[i][1] and fq_dis_e_section_list[area_id_front][
                     0] < fq_dis_e_section_list[area_id_front][1]:
@@ -1314,29 +1265,11 @@ def DQE_F1(tq_section_list, prediction_section_list, ts_len, gt_num=None, parame
     #  weight add
     # cal recall,precision
 
-    # local_recall_list = [[] for _ in range(gt_num)]
-    # local_precision_list = [[] for _ in range(gt_num)]
-    # local_f1_list = [[] for _ in range(gt_num)]
-    # local_fq_near_list = [[] for _ in range(gt_num)]
-    # local_fq_dis_list = [[] for _ in range(gt_num)]
-
-    # local_recall_list = np.arange(gt_num, dtype=np.float64)
-    # local_precision_list = np.arange(gt_num, dtype=np.float64)
-    # local_f1_list = np.arange(gt_num, dtype=np.float64)
-    # local_fq_near_list = np.arange(gt_num, dtype=np.float64)
-    # local_fq_dis_list = np.arange(gt_num, dtype=np.float64)
-
     local_recall_sum = 0
     local_precision_sum = 0
     local_f1_sum = 0
     local_fq_near_sum = 0
     local_fq_dis_sum = 0
-
-    # tq_recall_list = [[] for _ in range(gt_num)]
-    # tq_precision_list = [[] for _ in range(gt_num)]
-
-    # basic_interval_precision_integral_list = [[] for _ in range(gt_num)]
-    # basic_interval_recall_integral_list = [[] for _ in range(gt_num)]
 
     gt_detected_num = 0
 
@@ -1391,14 +1324,10 @@ def DQE_F1(tq_section_list, prediction_section_list, ts_len, gt_num=None, parame
 
                 pred_group_integral_precision_tq += cal_integral_basic_interval_gt_precision
                 pred_group_integral_recall_tq += cal_integral_basic_interval_gt_recall
-                # basic_interval_precision_integral_list[i].append(cal_integral_basic_interval_gt_precision)
-                # basic_interval_recall_integral_list[i].append(cal_integral_basic_interval_gt_recall)
 
         tq_section_integral_recall = tq_recall_integral_list[i]
 
         tq_recall = pred_group_integral_recall_tq / tq_section_integral_recall
-        # local_recall_list.append(tq_recall)
-        # local_recall_list[i] = tq_recall
 
         precision_all = pred_group_integral_precision_tq
         precision_valid = pred_group_integral_precision_tq
@@ -1429,11 +1358,8 @@ def DQE_F1(tq_section_list, prediction_section_list, ts_len, gt_num=None, parame
         precision_all += pred_group_integral_precision_delay
 
         tq_precision = precision_valid / precision_all if precision_all != 0 else 0
-        # local_precision_list[i] = tq_precision
-        # local_precision_list.append(tq_precision)
 
         tq_f1 = compute_f1_score(tq_precision, tq_recall)
-        # local_f1_list[i] = tq_f1
 
         adjust_score_fq_near = adjust_score_fq_near_e_list[i] * adjust_ratio_fq_near_e_list[i][1] + \
                                adjust_score_fq_near_d_list[area_id_next] * adjust_ratio_fq_near_e_list[area_id_next][0]
@@ -1457,40 +1383,12 @@ def DQE_F1(tq_section_list, prediction_section_list, ts_len, gt_num=None, parame
                                   adjust_adjust_fq_dis_d_list[area_id_next] * \
                                   adjust_score_fq_dis_e_d_list[area_id_next][0]
 
-        # local_fq_near_list[i] = adjust_score_fq_near
-        # local_fq_dis_list[i] = adjust_score_fq_dis
-
         local_recall_sum += tq_recall
         local_precision_sum += tq_precision
         local_f1_sum += tq_f1
         local_fq_near_sum += adjust_score_fq_near
         local_fq_dis_sum += adjust_score_fq_dis
 
-    # use_detection_rate = True
-    # # use_detection_rate = False
-
-    # for i, threshold in enumerate(thresholds):
-    #     if threshold <= 0:
-    #         continue
-    #     mean_near_fq = np.mean(local_near_fq_matrix_np[i])
-    #     mean_distant_fq = np.mean(local_distant_fq_matrix_np[i])
-    #
-    #     if use_detection_rate:
-    #         mean_recall = np.mean(local_recall_matrix_np[i]) * gt_detection_list[i]
-    #         mean_precision = np.mean(local_precision_matrix_np[i]) * gt_detection_list[i]
-    #     else:
-    #         mean_recall = np.mean(local_recall_matrix_np[i])
-    #         mean_precision = np.mean(local_precision_matrix_np[i])
-    #
-    #     mean_recall_list.append(mean_recall)
-    #     mean_precision_list.append(mean_precision)
-    #
-    #     mean_near_fp_list.append(mean_near_fq)
-    #     mean_distant_fp_list.append(mean_distant_fq)
-    #
-    #     local_f1 = compute_f1_score(mean_precision, mean_recall)
-    #
-    #     local_f1_list.append(local_f1)
     gt_detected_rate = gt_detected_num / gt_num
     if use_detection_rate:
         mean_recall = local_recall_sum / gt_num * gt_detected_rate
@@ -1506,21 +1404,14 @@ def DQE_F1(tq_section_list, prediction_section_list, ts_len, gt_num=None, parame
 
     w_tq = parameter_dict["w_tq"]
     w_fq_near = parameter_dict["w_fq_near"]
-    # mean_f1 = local_f1_sum/gt_num
 
     dqe_f1 = cal_dqe_row(w_tq, w_fq_near, mean_fq_dis,
                          mean_pr_f1, mean_fq_near)
-
-    # local_dqe_value_list.append(local_dqe_value)
 
     if cal_components:
         dqe_f1_w_tq = cal_dqe_row(1, 0, mean_fq_dis, mean_pr_f1, mean_fq_near)
         dqe_f1_w_fq_near = cal_dqe_row(0, 1, mean_fq_dis, mean_pr_f1, mean_fq_near)
         dqe_f1_w_fq_dis = cal_dqe_row(0, 0, mean_fq_dis, mean_pr_f1, mean_fq_near)
-
-    # if print_msg:
-    #     print()
-    #     print("basic_interval_integral_dict", basic_interval_precision_integral_list)
 
     if print_msg:
         print()
@@ -1545,37 +1436,12 @@ def DQE_F1(tq_section_list, prediction_section_list, ts_len, gt_num=None, parame
             print("adjusted_ddl_score_ia_distant_left_dict", adjust_fq_dis_e_list)
             print("adjusted_ddl_score_ia_distant_right_dict", adjust_adjust_fq_dis_d_list)
 
-        print()
-        # print("local_recall_matrix", local_recall_list)
-        # print("local_precision_matrix", local_precision_list)
-        # print("local_fq_near_matrix", local_fq_near_list)
-        # print("local_fq_distant_matrix", local_fq_dis_list)
-        # print("gt_detected_rate", gt_detected_rate)
-
-    # return local_recall_list,local_precision_list,local_f1_list,local_fq_near_list,local_fq_dis_list,gt_detected_rate
     if cal_components:
         return dqe_f1, dqe_f1_w_tq, dqe_f1_w_fq_near, dqe_f1_w_fq_dis
-        # return {
-        #     # "mean_recall": mean_recall,
-        #     # "mean_precision": mean_precision,
-        #     # "mean_f1": mean_f1,
-        #     # "mean_fq_near": mean_fq_near,
-        #     # "mean_fq_dis": mean_fq_dis,
-        #     "dqe_f1": dqe_f1,
-        #     "dqe_w_tq": dqe_w_tq,
-        #     "dqe_w_fq_near": dqe_w_fq_near,
-        #     "dqe_w_fq_dis": dqe_w_fq_dis
-        # }
+
     else:
         return dqe_f1
-        # return {
-        #     # "mean_recall": mean_recall,
-        #     # "mean_precision": mean_precision,
-        #     # "mean_f1": mean_f1,
-        #     # "mean_fq_near": mean_fq_near,
-        #     # "mean_fq_dis": mean_fq_dis,
-        #     "dqe_f1": dqe_f1
-        # }
+
 
 
 def triangle_weights_add(x: np.ndarray, values):
@@ -1644,8 +1510,7 @@ def DQE(y_true, y_score, parameter_dict=parameter_dict, max_fq_distant_len=None,
     thresholds = np.linspace(1, 0, thresh_num)
 
     # array -> interval_ranges
-    gt_interval_ranges = convert_vector_to_events(y_true)
-    # gt_interval_ranges = convert_vector_to_events_dqe(y_true)
+    gt_interval_ranges = convert_vector_to_events_dqe(y_true)
 
     gt_num = len(gt_interval_ranges)
 
@@ -1680,7 +1545,6 @@ def DQE(y_true, y_score, parameter_dict=parameter_dict, max_fq_distant_len=None,
             continue
         # score->binary array
         binary_predicted = (y_score >= threshold).astype(int)
-        # pred_interval_ranges = convert_vector_to_events(binary_predicted)
         pred_interval_ranges = convert_vector_to_events_dqe(binary_predicted)
 
         # area list
@@ -1691,7 +1555,6 @@ def DQE(y_true, y_score, parameter_dict=parameter_dict, max_fq_distant_len=None,
         fq_near_d_section_list = [[] for _ in range(gt_num + 1)]  # index:1-n
 
         split_line_set = SortedSet()
-        # split_line_list = []
         tq_section_list = gt_interval_ranges
         for i, tq_section_i in enumerate(tq_section_list):
 
@@ -1715,7 +1578,6 @@ def DQE(y_true, y_score, parameter_dict=parameter_dict, max_fq_distant_len=None,
                     # fq_near_early_i
                     fq_near_e_section_list[i] = [fq_near_e_section_i_start, fq_near_e_section_i_end]
 
-                    # tq_section_list[i] = [tq_section_i_start, tq_section_i_end]
 
                     # next section
                     # fq_near_delay_i_next
@@ -1753,15 +1615,9 @@ def DQE(y_true, y_score, parameter_dict=parameter_dict, max_fq_distant_len=None,
                         fq_near_d_section_list[i + 1] = [tq_section_i_end, tq_section_i_end]
 
                         if distant_method == "whole":
-                            # fq_distant_i
-                            # fq_distant_section_list[i] = [0, fq_near_early_section_i_start]
-
                             # next section
                             fq_dis_section_list[i + 1] = [tq_section_i_end, ts_len]
                         else:
-                            # fq_distant_early_i
-                            # fq_distant_early_section_list[i] = [0, fq_distant_section_list[i][1]]
-
                             # next section
                             # fq_distant_delay_i_next
                             fq_dis_d_section_list[i + 1] = [tq_section_i_end, ts_len]
@@ -1778,7 +1634,6 @@ def DQE(y_true, y_score, parameter_dict=parameter_dict, max_fq_distant_len=None,
 
                     # fq_near
                     fq_near_e_section_list[i] = [fq_near_e_section_i_start, fq_near_e_section_i_end]
-                    # tq_section_list[i] = [tq_section_i_start, tq_section_i_end]
 
                     # next section
                     fq_near_d_section_list[i + 1] = [fq_near_d_section_i_next_start, fq_near_d_section_i_next_end]
@@ -1800,11 +1655,6 @@ def DQE(y_true, y_score, parameter_dict=parameter_dict, max_fq_distant_len=None,
                             fq_dis_e_section_list[i] = [0, tq_section_i_start]
                     if weight_fq_near_delay <= 0:
                         fq_near_d_section_list[i + 1] = [tq_section_i_end, tq_section_i_end]
-                        # if distant_method == "whole":
-                        #     pass
-                        # fq_distant_section_list[i] = [0, fq_near_early_section_i_start]
-                        # else:
-                        # fq_distant_early_section_list[i] = [0, fq_near_early_section_i_start]
             elif i == gt_num - 1:
                 # get position
                 tq_section_i_last_start, tq_section_i_last_end = tq_section_list[i - 1]
@@ -1819,7 +1669,6 @@ def DQE(y_true, y_score, parameter_dict=parameter_dict, max_fq_distant_len=None,
 
                 # fq_near
                 fq_near_e_section_list[i] = [fq_near_e_section_i_start, fq_near_e_section_i_end]
-                # tq_section_list[i] = [tq_section_i_start, tq_section_i_end]
                 fq_near_d_section_list[i + 1] = [fq_near_d_section_i_next_start, fq_near_d_section_i_next_end]
 
                 # fq_distant
@@ -1873,7 +1722,6 @@ def DQE(y_true, y_score, parameter_dict=parameter_dict, max_fq_distant_len=None,
 
                 # fq_near
                 fq_near_e_section_list[i] = [fq_near_e_section_i_start, fq_near_e_section_i_end]
-                # tq_section_list[i] = [tq_section_i_start, tq_section_i_end]
                 fq_near_d_section_list[i + 1] = [fq_near_d_section_i_next_start, fq_near_d_section_i_next_end]
 
                 # fq_distant
@@ -1905,13 +1753,11 @@ def DQE(y_true, y_score, parameter_dict=parameter_dict, max_fq_distant_len=None,
             # add split line
             if weight_fq_near_early > 0:
                 split_line_set.add(fq_near_e_section_i_start)
-                # split_line_set.add(fq_near_early_section_i_end)
 
             split_line_set.add(tq_section_i_start)
             split_line_set.add(tq_section_i_end)
 
             if weight_fq_near_delay > 0:
-                # split_line_set.add(fq_near_delay_section_i_next_start)
                 split_line_set.add(fq_near_d_section_i_next_end)
 
             if distant_method == "split":
@@ -1930,8 +1776,6 @@ def DQE(y_true, y_score, parameter_dict=parameter_dict, max_fq_distant_len=None,
         }
 
         # cal entire integral in tq section
-        # tq_precision_integral_list = [[] for _ in range(gt_num)]
-        # tq_recall_integral_list = [[] for _ in range(gt_num)]
         tq_recall_integral_list = np.arange(gt_num, dtype=np.float64)
 
         func_parameter_list_precision_tq = [{} for _ in range(gt_num)]
@@ -1947,10 +1791,6 @@ def DQE(y_true, y_score, parameter_dict=parameter_dict, max_fq_distant_len=None,
             w_tq_precision = 1 / 2
 
             c_precision = cal_power_function_parameter_b(beta, w_tq_precision, 0, tq_section_len)
-
-            # entire_section_integral_tq_precision = cal_integral_in_range_gt_power_func(area, c_precision, beta, \
-            #                                                                            parameter_w_tq=w_tq_precision, \
-            #                                                                            area_end=area[1])
 
             entire_section_integral_tq_recall = cal_integral_in_range_gt_power_func(area, a_recall, beta, \
                                                                                     parameter_w_tq=w_tq_recall, \
@@ -1970,18 +1810,15 @@ def DQE(y_true, y_score, parameter_dict=parameter_dict, max_fq_distant_len=None,
             func_parameter_list_precision_fq_near[i]["coefficient_early"] = coefficient_early
             func_parameter_list_precision_fq_near[i]["beta_early"] = beta_early
 
-            # tq_precision_integral_list[i] = entire_section_integral_tq_precision
             tq_recall_integral_list[i] = entire_section_integral_tq_recall
 
         integral_tq_section_res = {
-            # "tq_precision_integral_list": tq_precision_integral_list,
             "tq_recall_integral_list": tq_recall_integral_list,
             "func_parameter_list_precision_tq": func_parameter_list_precision_tq,
             "func_parameter_list_recall": func_parameter_list_recall,
             "func_parameter_list_precision_fq_near": func_parameter_list_precision_fq_near,
         }
 
-        # deq_f1_res = DQE_F1(gt_interval_ranges,
         if cal_components:
             dqe_f1, dqe_f1_w_tq, dqe_f1_w_fq_near, dqe_f1_w_fq_dis = DQE_F1(gt_interval_ranges,
                                                                             pred_interval_ranges,
@@ -2008,9 +1845,6 @@ def DQE(y_true, y_score, parameter_dict=parameter_dict, max_fq_distant_len=None,
             dqe_list_w_fq_near.append(dqe_f1_w_fq_near)
             dqe_list_w_fq_distant.append(dqe_f1_w_fq_dis)
 
-    # weight_sum_method = "triangle"
-    # # weight_sum_method = "equal"
-
     # weight sum
     if weight_sum_method == "equal":
         dqe = np.mean(dqe_list)
@@ -2033,20 +1867,12 @@ def DQE(y_true, y_score, parameter_dict=parameter_dict, max_fq_distant_len=None,
             print(" dqe_w_tq", dqe_w_tq)
             print(" dqe_w_fq_near", dqe_w_fq_near)
             print(" dqe_w_fq_distant", dqe_w_fq_distant)
-    # dqe_w_fq = (dqe_w_fq_near+dqe_w_fq_distant) / 2
 
     if cal_components:
-        # return dqe,dqe_w_tq,dqe_w_fq_near,dqe_w_fq_distant,dqe_w_fq
         return dqe, dqe_w_tq, dqe_w_fq_near, dqe_w_fq_distant
-        # return {"dqe": dqe,
-        #         "dqe_w_tq": dqe_w_tq,
-        #         "dqe_w_fq_near": dqe_w_fq_near,
-        #         "dqe_w_fq_distant": dqe_w_fq_distant,
-        #         # "dqe_w_fq": dqe_w_fq,
-        #         }
+
     else:
         return dqe
-        # return {"dqe": dqe}
 
 
 def cal_dqe_row(parameter_w_tq, parameter_w_fq_near, row_mean_distant_fp_value, row_mean_f1_value,

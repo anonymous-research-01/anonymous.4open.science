@@ -7,7 +7,7 @@ import json
 import argparse
 
 from metrics.pate.PATE_utils import convert_events_to_array_PATE
-from utils_synthetic_exp import evaluate_all_metrics
+from experiments.utils_synthetic_exp import evaluate_all_metrics
 from config.dqe_config import parameter_dict
 
 
@@ -26,10 +26,6 @@ if __name__ == '__main__':
     ## ArgumentParser
     parser = argparse.ArgumentParser(description='Running DQE synthetic data experiments')
     parser.add_argument('--exp_name', type=str, default='over-counting tp')
-    # parser.add_argument('--exp_name', type=str, default='tp timeliness')
-    # parser.add_argument('--exp_name', type=str, default='fp proximity')
-    # parser.add_argument('--exp_name', type=str, default='fp insensitivity or overevaluation of duration')
-    # parser.add_argument('--exp_name', type=str, default='fp duration overevaluation (af)')
     parser.add_argument('--print', type=bool, default=True)
     parser.add_argument('--test_time', type=bool, default=True)
     args = parser.parse_args()
@@ -274,7 +270,7 @@ if __name__ == '__main__':
         new_res_data.append(new_score_dict)
 
     directory = os.path.dirname(file_path)
-    if directory:  # 防止路径就是文件名，目录为空
+    if directory:
         os.makedirs(directory, exist_ok=True)
 
     with open(file_path, "w", encoding="utf-8") as file:
@@ -298,179 +294,4 @@ if __name__ == '__main__':
     
     df = pd.DataFrame(new_res_data)
     
-    print("new_res_data", new_res_data)
-    
-    
-    
-    
-    
-    # for i, pred_score_dict in enumerate(res_data):
-    #     for j, (metric_name,metric_score) in enumerate(pred_score_dict.items()):
-    #         if metric_name not in res_data_dict.keys():
-    #             res_data_dict[metric_name] = [metric_score]
-    #         else:
-    #             res_data_dict[metric_name].append(metric_score)
-    
-    # print("res_data_dict",res_data_dict)
-    
-    
-    # 添加索引列，分别命名为 pred1 和 pred2，并加粗
-    # 手动改数据行名
-    
-    pred_index_list = []
-    
-    
-    if ordered_num-1 == 1:
-        # pred_index_list = [r'\textbf{pred}']
-        pred_index_list = [r'P']
-    else:
-        # for i in range(0,ordered_num):
-        # remove gt line
-        for i in range(0, ordered_num - 1):
-            # if i == 0:
-            #     pred_index_list.append(r'\textbf{gt}')
-            # else:
-            #     pred_index_list.append(r'\textbf{pred' + str(i) +  '}')
-    
-            # remove gt line
-            # pred_index_list.append(r'\textbf{pred' + str(i + 1) + '}')
-            pred_index_list.append(r'P' + str(i + 1))
-    
-    df.index = pred_index_list
-
-
-    # 转换为 LaTeX 表格
-    latex_table = df.to_latex(
-        index=True,  # 包含索引列
-        caption=json_file_name,  # 表格标题
-        label='tab:'+json_file_name,  # 表格标签
-        escape=False,  # 不转义特殊字符
-        column_format='@{}lccccccccccc@{}',  # 列格式
-        position='h!',  # 表格位置
-        float_format='%.2f'  # 浮点数格式化为两位小数
-    )
-    
-    # 手动修改表头，去掉多余的行，并添加“Metric”
-    # 手动改第一行数据行名`
-    latex_table = latex_table.replace(
-        "\\toprule\n",
-        # "\\toprule\n\\textbf{Metric}"
-        "\\toprule\ngt"
-    )
-    
-    start_pos = latex_table.find("\\toprule")
-    end_pos = latex_table.find("\midrule")
-    # first_line = latex_table[start_pos:end_pos]
-    first_line = latex_table[start_pos+len("\\toprule\n"):end_pos]
-    d=1
-    # new_first_line = first_line
-    
-    # for i, metric_name in enumerate(new_res_data[0].keys()):
-    #     if metric_name in first_line:
-    #         new_first_line = new_first_line.replace(" "+metric_name+" ",
-    #                                                 " "+"\\textbf{"+ metric_name + "}"+" ")
-    
-    
-    # 添加表宽调整
-    # latex_table = latex_table.replace(
-    #     first_line,
-    #     new_first_line
-    # )
-    
-    start_pos = latex_table.find("\\toprule")
-    
-    # first_line_category = first_line.replace(
-    #     first_line,
-    #     new_first_line
-    # )
-    new_first_line = first_line+"\n"+first_line
-    latex_table = latex_table.replace(
-        first_line,
-        new_first_line
-    )
-    
-    latex_table = latex_table.replace(
-        "\\begin{tabular}",
-        "\\resizebox{\\columnwidth}{!}{"+"\n"+"\\begin{tabular}"
-    )
-    latex_table = latex_table.replace(
-        "\\end{tabular}",
-        "\\end{tabular}"+"\n"+"}"
-    )
-    
-    # latex_table = latex_table.replace(
-    #     "\\bottomrule\n",
-    #     # "\\toprule\n\\textbf{Metric}"
-    #     "\n"
-    # )
-    
-    
-    latex_table = latex_table.replace(
-        "\\toprule\n",
-        # "\\toprule\n\\textbf{Metric}"
-        "\n"
-    )
-    latex_table = latex_table.replace(
-        "\\midrule\n",
-        # "\\toprule\n\\textbf{Metric}"
-        "\n"
-    )
-    latex_table = latex_table.replace(
-        "\\bottomrule\n",
-        # "\\toprule\n\\textbf{Metric}"
-        "\n"
-    )
-    
-    # gt & \includegraphics{figures/single_prediction_figures/Non-GT area pred case gt} &
-    # Original-F$^{\dagger}
-    # PA-F$^{\odot}
-    # RF$^{\star}
-    # eTaF$^{\star}
-    # AUC-PR$^{*}
-    # VUS-PR$^{*}
-    # PATE$^{*}
-    # AUC-ROC$^{*}
-    # VUS-ROC$^{*}
-    # AF$^{\star}
-    # DLBE$^{\star}
-    # gt & \includegraphics{figures/single_prediction_figures/Non-GT area pred case gt} & Original-F$^{\textcolor{cyan6}{*}}$ & PA-F$^{\textcolor{purple4}{*}}$ & RF$^{\star}$ & eTaF$^{\star}$ & AUC-PR$^{*}$ & VUS-PR$^{*}$ & PATE$^{*}$ & AUC-ROC$^{*}$ & VUS-ROC$^{*}$ & AF$^{\star}$ & DLBE$^{\star}$ \\
-    
-    
-    latex_table = latex_table.replace("Original-F","Original-F$^{\\textcolor{cyan6}{*}}$")
-    latex_table = latex_table.replace("AUC-PR","AUC-PR$^{\\textcolor{cyan6}{*}}$")
-    latex_table = latex_table.replace("AUC-ROC","AUC-ROC$^{\\textcolor{cyan6}{*}}$")
-    latex_table = latex_table.replace("PA-F","PA-F$^{\\textcolor{purple4}{*}}$")
-    # "DTPA-F",
-    # "\%K-PA-F",
-    # "LS-F"
-    latex_table = latex_table.replace(" DTPA-F "," DTPA-F$^{\\textcolor{purple4}{*}}$ ")
-    latex_table = latex_table.replace(" \%K-PA-F "," \%K-PA-F$^{\\textcolor{purple4}{*}}$ ")
-    latex_table = latex_table.replace(" LS-F "," LS-F$^{\\textcolor{purple4}{*}}$ ")
-    
-    # latex_table = latex_table.replace("Original-F","Original-F$^{\dagger}$")
-    # latex_table = latex_table.replace("AUC-PR","AUC-PR$^{\dagger}$")
-    # latex_table = latex_table.replace("AUC-ROC","AUC-ROC$^{\dagger}$")
-    # latex_table = latex_table.replace("PA-F","PA-F$^{\odot}$")
-    # "DTPA-F",
-    # "\%K-PA-F",
-    # "LS-F"
-    latex_table = latex_table.replace(" DTPA-F "," DTPA-F$^{\odot}$ ")
-    latex_table = latex_table.replace(" \%K-PA-F "," \%K-PA-F$^{\odot}$ ")
-    latex_table = latex_table.replace(" LS-F "," LS-F$^{\odot}$ ")
-    
-    
-    latex_table = latex_table.replace("RF","RF$^{\star}$")
-    latex_table = latex_table.replace("eTaF","eTaF$^{\star}$")
-    latex_table = latex_table.replace("PATE","PATE$^{*}$")
-    latex_table = latex_table.replace("VUS-PR","VUS-PR$^{*}$")
-    latex_table = latex_table.replace("VUS-ROC","VUS-ROC$^{*}$")
-    latex_table = latex_table.replace(" AF &"," AF$^{\star}$ &")
-    latex_table = latex_table.replace("DQE","DQE$^{\star}$")
-    
-    latex_table = latex_table.replace(" & 0 & "," & 0.00 & ")
-    latex_table = latex_table.replace(" & 0 & "," & 0.00 & ")
-    
-    
-    print()
-    print(latex_table)
-    print()
+    print("res_data", new_res_data)

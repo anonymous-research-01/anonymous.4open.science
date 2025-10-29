@@ -14,8 +14,7 @@ if __name__ == '__main__':
 
     ## ArgumentParser
     parser = argparse.ArgumentParser(description='Running DQE real-world experiments (case analysis)')
-    # parser.add_argument('--exp_name', type=str, default='YAHOO case')
-    parser.add_argument('--exp_name', type=str, default='WSD case')
+    parser.add_argument('--exp_name', type=str, default='YAHOO case')
     parser.add_argument('--print', type=bool, default=True)
     parser.add_argument('--test_time', type=bool, default=True)
     args = parser.parse_args()

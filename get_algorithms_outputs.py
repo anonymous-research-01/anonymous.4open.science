@@ -76,7 +76,6 @@ if __name__ == '__main__':
         label_ranges = [range_anomaly]
         label_array_list = [label]
 
-        # time_start = time.time()
         for idx, ad_name in enumerate(filter_ad_pool[:cal_model_num]):
 
             if ad_name in Optimal_Uni_algo_HP_dict.keys():
@@ -84,18 +83,12 @@ if __name__ == '__main__':
             else:
                 Optimal_Det_HP = Optimal_Multi_algo_HP_dict[ad_name]
 
-            # print("=========",idx,ad_name)
-            # time_start_single = time.time()
             if ad_name in Semisupervise_AD_Pool:
                 output = run_Semisupervise_AD(ad_name, data_train, data, **Optimal_Det_HP)
             elif ad_name in Unsupervise_AD_Pool:
                 output = run_Unsupervise_AD(ad_name, data, **Optimal_Det_HP)
             else:
                 raise Exception(f"{ad_name} is not defined")
-
-            # time_end_single = time.time()
-            # # print("=========", idx, ad_name)
-            # # print("single time cost",time_end_single-time_start_single,(time_end_single-time_start_single)/60)
 
             output = MinMaxScaler(feature_range=(0, 1)).fit_transform(output.reshape(-1, 1)).ravel()
             label_array_list.append(output)
@@ -120,63 +113,41 @@ if __name__ == '__main__':
 
 
         def custom_json_dumps(obj, indent=2):
-            """
-            自定义 JSON 序列化函数：
-            - 如果是列表，只对第一层列表进行格式化，内部子列表保持紧凑格式。
-            - 如果是字典，进行格式化。
-            """
             if isinstance(obj, list):
-                # 对第一层列表进行格式化
                 items = []
                 for item in obj:
                     if isinstance(item, list):
-                        # 内部子列表保持紧凑格式
                         item_str = json.dumps(item, separators=(',', ':'))
                     else:
-                        # 其他类型递归处理
                         item_str = custom_json_dumps(item, indent)
                     items.append(item_str)
                 indent_str = ' ' * indent
                 items_str = ',\n'.join([f'{indent_str}{item}' for item in items])
                 return f'[\n{items_str}\n]'
             elif isinstance(obj, dict):
-                # 字典内容格式化
                 items = []
                 for key, value in obj.items():
-                    # 递归处理每个值
                     value_str = custom_json_dumps(value, indent)
                     items.append(f'"{key}": {value_str}')
                 indent_str = ' ' * indent
                 items_str = ',\n'.join([f'{indent_str}{item}' for item in items])
                 return f'{{\n{items_str}\n}}'
             else:
-                # 其他类型直接返回默认处理结果
                 return json.dumps(obj)
 
 
         def custom_json_dumps_only_list(obj, indent=2):
-            """
-            自定义 JSON 序列化函数：
-            - 如果是字典，格式化（有缩进和换行）。
-            - 如果字典的值是列表，整个列表写在冒号后面，且在一行内。
-            - 其他内容保持默认处理。
-            """
             if isinstance(obj, dict):
-                # 字典内容格式化
                 items = []
                 for key, value in obj.items():
-                    # 递归处理每个值
                     value_str = custom_json_dumps(value, indent)
-                    # 如果值是列表，直接写在冒号后面，不换行
                     if isinstance(value, list):
                         value_str = json.dumps(value, separators=(',', ':'))
                     items.append(f'"{key}": {value_str}')
-                # 添加缩进
                 indent_str = ' ' * indent
                 items_str = ',\n'.join([f'{indent_str}{item}' for item in items])
                 return f'{{\n{items_str}\n}}'
             else:
-                # 其他类型直接返回默认处理结果
                 return json.dumps(obj)
 
 
