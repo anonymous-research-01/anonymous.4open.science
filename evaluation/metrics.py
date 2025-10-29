@@ -1,18 +1,19 @@
 import time
+import copy
 
 from .basic_metrics import basic_metricor, generate_curve
-from pate.PATE_metric import PATE
+from metrics.pate.PATE_metric import PATE
+from config.dqe_config import parameter_dict
 
-from config.meata_config import parameter_dict
 
 
-def get_metrics(score, labels, slidingWindow=100, pred=None, version='opt', thre=250):
+def get_metrics(score, labels, slidingWindow=100, pred=None, version='opt', thre=250,print_msg=True,test_time=True):
     metrics = {}
     case_analyze = [
-        "meata_auc",
+        "DQE",
         # "PA-K"
     ]
-    th_50_100_set1_exp_list = [
+    th_100_exp_list = [
     'Standard-F1',
     'AUC-ROC',
     'AUC-PR',
@@ -29,12 +30,10 @@ def get_metrics(score, labels, slidingWindow=100, pred=None, version='opt', thre
     # 'Event-based-F1',
     'eTaPR_F1',
     'Affiliation-F',
-    "meata_auc",
-
+    "DQE",
     ]
 
-    # exp_list = th_50_100_set1_exp_list
-    exp_list = case_analyze
+    exp_list = th_100_exp_list
 
 
     '''
@@ -42,65 +41,63 @@ def get_metrics(score, labels, slidingWindow=100, pred=None, version='opt', thre
     '''
     grader = basic_metricor()
     if "AUC-ROC" in exp_list:
-        time_start = time.time()
+        if test_time:
+            time_start = time.time()
         AUC_ROC = grader.metric_ROC(labels, score)
-        time_end = time.time()
-        # print("AUC_ROC time_end - time_start", time_end - time_start)
+        if test_time:
+            time_end = time.time()
+        if print_msg:
+            print("AUC_ROC time_end - time_start", time_end - time_start)
         metrics['AUC-ROC'] = AUC_ROC
 
     if "AUC-PR" in exp_list:
-
-        time_start = time.time()
+        if test_time:
+            time_start = time.time()
         AUC_PR = grader.metric_PR(labels, score)
-        time_end = time.time()
-        # print("AUC_PR time_end - time_start", time_end - time_start)
+        if test_time:
+            time_end = time.time()
+        if print_msg:
+            print("AUC_PR time_end - time_start", time_end - time_start)
         metrics['AUC-PR'] = AUC_PR
 
     if "VUS-PR"  in exp_list and "VUS-ROC" in exp_list:
-
-        time_start = time.time()
+        if test_time:
+            time_start = time.time()
         _, _, _, _, _, _,VUS_ROC, VUS_PR = generate_curve(labels.astype(int), score, slidingWindow, version, thre)
-        time_end = time.time()
-        # print("VUS_ROC VUS_PR time_end - time_start", time_end - time_start)
+        if test_time:
+            time_end = time.time()
+        if print_msg:
+            print("VUS_ROC VUS_PR time_end - time_start", time_end - time_start)
         metrics['VUS-PR'] = VUS_PR
         metrics['VUS-ROC'] = VUS_ROC
 
     if "PATE" in exp_list:
-
-        time_start = time.time()
+        if test_time:
+            time_start = time.time()
         e_buffer = d_buffer = slidingWindow//2
         pate = PATE(labels, score, e_buffer, d_buffer, Big_Data=True, n_jobs=1, include_zero=False,num_desired_thresholds=thre)
-        time_end = time.time()
-        # print("pate time_end - time_start", time_end - time_start)
+        if test_time:
+            time_end = time.time()
+        if print_msg:
+            print("pate time_end - time_start", time_end - time_start)
         metrics['PATE'] = pate
 
-
-    # need thresh
-
-    if "PATE_F1" in exp_list:
-        time_start = time.time()
-        e_buffer = d_buffer = slidingWindow//2
-        pate_f1 = grader.metric_PATE_F1(labels, score, preds=pred,e_buffer=e_buffer,d_buffer=d_buffer)
-        time_end = time.time()
-        # print("pate_f1 time_end - time_start", time_end - time_start)
-        metrics['PATE_F1'] = pate_f1
-
-    if "meata_auc" in exp_list:
-        time_start = time.time()
-        import copy
-        parameter_dict_copy = copy.deepcopy(parameter_dict)
-        parameter_dict_copy["parameter_near_single_side_range"] = slidingWindow
-
-        meata,meata_w_gt,meata_w_near_ngt,meata_w_distant_ngt,meata_w_ngt = grader.metric_meata_AUC_PR(labels, score, preds=pred,parameter_dict=parameter_dict_copy,cal_mode="proportion")
-
-        time_end = time.time()
-        # print("meata_auc time_end - time_start", time_end - time_start)
-        metrics['final_meata'] = meata
-        metrics['meata'] = meata
-        metrics['meata_w_gt'] = meata_w_gt
-        metrics['meata_w_near_ngt'] = meata_w_near_ngt
-        metrics['meata_w_distant_ngt'] = meata_w_distant_ngt
-        metrics['meata_w_ngt'] = meata_w_ngt
+    if "DQE" in exp_list:
+        if test_time:
+            time_start = time.time()
+        parameter_dict_adapt = copy.deepcopy(parameter_dict)
+        parameter_dict_adapt["near_single_side_range"] = slidingWindow
+        # dqe,dqe_w_tq,dqe_w_fq_near,dqe_w_fq_distant,dqe_w_fq = grader.metric_DQE(labels, score, preds=pred, parameter_dict=parameter_dict_adapt)
+        dqe, dqe_w_tq, dqe_w_fq_near, dqe_w_fq_distant = grader.metric_DQE(labels, score, preds=pred, parameter_dict=parameter_dict_adapt)
+        if test_time:
+            time_end = time.time()
+        if print_msg:
+            print("dqe time_end - time_start", time_end - time_start)
+        metrics['dqe'] = dqe
+        metrics['dqe_w_tq'] = dqe_w_tq
+        metrics['dqe_w_fq_near'] = dqe_w_fq_near
+        metrics['dqe_w_fq_distant'] = dqe_w_fq_distant
+        # metrics['dqe_w_fq'] = dqe_res['dqe_w_fq']
 
     '''
     Threshold Dependent
@@ -119,7 +116,7 @@ def get_metrics(score, labels, slidingWindow=100, pred=None, version='opt', thre
         PointF1PA_K = grader.metric_PointF1PA_K(labels, score, preds=pred)
         metrics['PA-K'] = PointF1PA_K
 
-
+    # EventF1PA = grader.metric_EventF1PA(labels, score, preds=pred)
 
     if "R-based-F1" in exp_list:
         RF1 = grader.metric_RF1(labels, score, preds=pred)
@@ -131,7 +128,10 @@ def get_metrics(score, labels, slidingWindow=100, pred=None, version='opt', thre
         eTaPR_F1 = grader.metric_eTaPR_F1(labels, score, preds=pred)
         metrics['eTaPR_F1'] = eTaPR_F1
 
-
+    if "PATE_F1" in exp_list:
+        e_buffer = d_buffer = slidingWindow//2
+        pate_f1 = grader.metric_PATE_F1(labels, score, preds=pred,e_buffer=e_buffer,d_buffer=d_buffer)
+        metrics['PATE_F1'] = pate_f1
 
     return metrics
 

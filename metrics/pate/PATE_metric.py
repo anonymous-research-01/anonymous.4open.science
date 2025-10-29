@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import time
 
 import numpy as np
 from sklearn.metrics._ranking import _binary_clf_curve
 from joblib import Parallel, delayed
 
-from pate.PATE_utils import convert_vector_to_events_PATE, categorize_predicted_ranges_with_ids, apply_weights, generate_buffer_points, clean_and_compute_auc_pr
+from metrics.pate.PATE_utils import convert_vector_to_events_PATE, categorize_predicted_ranges_with_ids, apply_weights, generate_buffer_points, clean_and_compute_auc_pr
 
 
 def compute_adjusted_scores(i, threshold, y_score, actual_anomaly_ranges, e_buffer, d_buffer, time_series_length):

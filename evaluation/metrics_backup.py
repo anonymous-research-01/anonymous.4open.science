@@ -1,9 +1,8 @@
 import time
 
 from .basic_metrics import basic_metricor, generate_curve
-from pate.PATE_metric import PATE
-from pate.PATE_utils import convert_events_to_array_PATE, categorize_predicted_ranges_with_ids
-from DQE import meata,auc_pr_meata
+from metrics.pate.PATE_metric import PATE
+from DQE import auc_pr_meata
 
 
 def get_metrics(score, labels, slidingWindow=100, pred=None, version='opt', thre=250):

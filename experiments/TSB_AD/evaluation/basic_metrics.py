@@ -3,51 +3,41 @@ import numpy as np
 import math
 import copy
 
-from metrics.eTaPR_pkg import f1_score_etapr
-from metrics.metrics_pa import PointAdjustKPercent
-from metrics.pate.PATE_metric import PATE
-from DQE.DQE import DQE
-from config.dqe_config import parameter_dict
-from metrics.pate.PATE_utils import convert_vector_to_events_PATE
-
-
 def generate_curve(label, score, slidingWindow, version='opt', thre=250):
-    if version == 'opt_mem':
-        tpr_3d, fpr_3d, prec_3d, window_3d, avg_auc_3d, avg_ap_3d = basic_metricor().RangeAUC_volume_opt_mem(
-            labels_original=label, score=score, windowSize=slidingWindow, thre=thre)
+    if version =='opt_mem':
+        tpr_3d, fpr_3d, prec_3d, window_3d, avg_auc_3d, avg_ap_3d = basic_metricor().RangeAUC_volume_opt_mem(labels_original=label, score=score, windowSize=slidingWindow, thre=thre)
     else:
-        tpr_3d, fpr_3d, prec_3d, window_3d, avg_auc_3d, avg_ap_3d = basic_metricor().RangeAUC_volume_opt(
-            labels_original=label, score=score, windowSize=slidingWindow, thre=thre)
+        tpr_3d, fpr_3d, prec_3d, window_3d, avg_auc_3d, avg_ap_3d = basic_metricor().RangeAUC_volume_opt(labels_original=label, score=score, windowSize=slidingWindow, thre=thre)
 
-    X = np.array(tpr_3d).reshape(1, -1).ravel()
-    X_ap = np.array(tpr_3d)[:, :-1].reshape(1, -1).ravel()
-    Y = np.array(fpr_3d).reshape(1, -1).ravel()
-    W = np.array(prec_3d).reshape(1, -1).ravel()
+
+    X = np.array(tpr_3d).reshape(1,-1).ravel()
+    X_ap = np.array(tpr_3d)[:,:-1].reshape(1,-1).ravel()
+    Y = np.array(fpr_3d).reshape(1,-1).ravel()
+    W = np.array(prec_3d).reshape(1,-1).ravel()
     Z = np.repeat(window_3d, len(tpr_3d[0]))
-    Z_ap = np.repeat(window_3d, len(tpr_3d[0]) - 1)
+    Z_ap = np.repeat(window_3d, len(tpr_3d[0])-1)
 
-    return Y, Z, X, X_ap, W, Z_ap, avg_auc_3d, avg_ap_3d
-
+    return Y, Z, X, X_ap, W, Z_ap,avg_auc_3d, avg_ap_3d
 
 class basic_metricor():
-    def __init__(self, a=1, probability=True, bias='flat', ):
+    def __init__(self, a = 1, probability = True, bias = 'flat', ):
         self.a = a
         self.probability = probability
         self.bias = bias
         self.eps = 1e-15
 
-    def detect_model(self, model, label, contamination=0.1, window=100, is_A=False, is_threshold=True):
+    def detect_model(self, model, label, contamination = 0.1, window = 100, is_A = False, is_threshold = True):
         if is_threshold:
             score = self.scale_threshold(model.decision_scores_, model._mu, model._sigma)
         else:
-            score = self.scale_contamination(model.decision_scores_, contamination=contamination)
+            score = self.scale_contamination(model.decision_scores_, contamination = contamination)
         if is_A is False:
-            scoreX = np.zeros(len(score) + window)
-            scoreX[math.ceil(window / 2): len(score) + window - math.floor(window / 2)] = score
+            scoreX = np.zeros(len(score)+window)
+            scoreX[math.ceil(window/2): len(score)+window - math.floor(window/2)] = score
         else:
             scoreX = score
 
-        self.score_ = scoreX
+        self.score_=scoreX
         L = self.metric(label, scoreX)
         return L
 
@@ -56,12 +46,12 @@ class basic_metricor():
         MaxValue = 0
         start = AnomalyRange[0]
         AnomalyLength = AnomalyRange[1] - AnomalyRange[0] + 1
-        for i in range(start, start + AnomalyLength):
+        for i in range(start, start +AnomalyLength):
             bi = self.b(i, AnomalyLength)
-            MaxValue += bi
+            MaxValue +=  bi
             if i in p:
                 MyValue += bi
-        return MyValue / MaxValue
+        return MyValue/MaxValue
 
     def Cardinality_factor(self, Anomolyrange, Prange):
         score = 0
@@ -69,7 +59,7 @@ class basic_metricor():
         end = Anomolyrange[1]
         for i in Prange:
             if i[0] >= start and i[0] <= end:
-                score += 1
+                score +=1
             elif start >= i[0] and start <= i[1]:
                 score += 1
             elif end >= i[0] and end <= i[1]:
@@ -79,7 +69,7 @@ class basic_metricor():
         if score == 0:
             return 0
         else:
-            return 1 / score
+            return 1/score
 
     def b(self, i, length):
         bias = self.bias
@@ -90,13 +80,13 @@ class basic_metricor():
         elif bias == 'back-end bias':
             return i
         else:
-            if i <= length / 2:
+            if i <= length/2:
                 return i
             else:
                 return length - i + 1
 
     def scale_threshold(self, score, score_mu, score_sigma):
-        return (score >= (score_mu + 3 * score_sigma)).astype(int)
+        return (score >= (score_mu + 3*score_sigma)).astype(int)
 
     def _adjust_predicts(self, score, label, threshold=None, pred=None, calc_latency=False):
         """
@@ -127,15 +117,15 @@ class basic_metricor():
         anomaly_count = 0
         for i in range(len(score)):
             if actual[i] and predict[i] and not anomaly_state:
-                anomaly_state = True
-                anomaly_count += 1
-                for j in range(i, 0, -1):
-                    if not actual[j]:
-                        break
-                    else:
-                        if not predict[j]:
-                            predict[j] = True
-                            latency += 1
+                    anomaly_state = True
+                    anomaly_count += 1
+                    for j in range(i, 0, -1):
+                        if not actual[j]:
+                            break
+                        else:
+                            if not predict[j]:
+                                predict[j] = True
+                                latency += 1
             elif not actual[i]:
                 anomaly_state = False
             if anomaly_state:
@@ -169,46 +159,45 @@ class basic_metricor():
             print('Score must not be none.')
             return None
 
-        # area under curve
+        #area under curve
         auc = metrics.roc_auc_score(label, score)
         # plor ROC curve
         if plot_ROC:
-            fpr, tpr, thresholds = metrics.roc_curve(label, score)
+            fpr, tpr, thresholds  = metrics.roc_curve(label, score)
             # display = metrics.RocCurveDisplay(fpr=fpr, tpr=tpr, roc_auc=auc)
             # display.plot()
 
-        # precision, recall, F
+        #precision, recall, F
         if preds is None:
-            preds = score > (np.mean(score) + 3 * np.std(score))
+            preds = score > (np.mean(score)+3*np.std(score))
         Precision, Recall, F, Support = metrics.precision_recall_fscore_support(label, preds, zero_division=0)
         precision = Precision[1]
         recall = Recall[1]
         f = F[1]
 
-        # point-adjust
+        #point-adjust
         adjust_preds = self._adjust_predicts(score, label, pred=preds)
         PointF1PA = metrics.f1_score(label, adjust_preds)
 
-        # range anomaly
+        #range anomaly
         Rrecall, ExistenceReward, OverlapReward = self.range_recall_new(label, preds, alpha)
         Rprecision = self.range_recall_new(preds, label, 0)[0]
 
-        if Rprecision + Rrecall == 0:
-            Rf = 0
+        if Rprecision + Rrecall==0:
+            Rf=0
         else:
             Rf = 2 * Rrecall * Rprecision / (Rprecision + Rrecall)
 
         # top-k
         k = int(np.sum(label))
-        threshold = np.percentile(score, 100 * (1 - k / len(label)))
+        threshold = np.percentile(score, 100 * (1-k/len(label)))
 
         # precision_at_k = metrics.top_k_accuracy_score(label, score, k)
         p_at_k = np.where(preds > threshold)[0]
         TP_at_k = sum(label[p_at_k])
-        precision_at_k = TP_at_k / k
+        precision_at_k = TP_at_k/k
 
-        L = [auc, precision, recall, f, PointF1PA, Rrecall, ExistenceReward, OverlapReward, Rprecision, Rf,
-             precision_at_k]
+        L = [auc, precision, recall, f, PointF1PA, Rrecall, ExistenceReward, OverlapReward, Rprecision, Rf, precision_at_k]
         if plot_ROC:
             return L, fpr, tpr
         return L
@@ -247,8 +236,7 @@ class basic_metricor():
                 affiliation_metrics = pr_from_events(events_pred, events_gt, Trange)
                 Affiliation_Precision = affiliation_metrics['Affiliation_Precision']
                 Affiliation_Recall = affiliation_metrics['Affiliation_Recall']
-                Affiliation_F = 2 * Affiliation_Precision * Affiliation_Recall / (
-                            Affiliation_Precision + Affiliation_Recall + self.eps)
+                Affiliation_F = 2*Affiliation_Precision*Affiliation_Recall / (Affiliation_Precision+Affiliation_Recall+self.eps)
 
                 Affiliation_scores.append(Affiliation_F)
 
@@ -262,8 +250,7 @@ class basic_metricor():
             affiliation_metrics = pr_from_events(events_pred, events_gt, Trange)
             Affiliation_Precision = affiliation_metrics['Affiliation_Precision']
             Affiliation_Recall = affiliation_metrics['Affiliation_Recall']
-            Affiliation_F1 = 2 * Affiliation_Precision * Affiliation_Recall / (
-                        Affiliation_Precision + Affiliation_Recall + self.eps)
+            Affiliation_F1 = 2*Affiliation_Precision*Affiliation_Recall / (Affiliation_Precision+Affiliation_Recall+self.eps)
 
         return Affiliation_F1
 
@@ -278,8 +265,8 @@ class basic_metricor():
 
                 Rrecall, ExistenceReward, OverlapReward = self.range_recall_new(label, preds, alpha=0.2)
                 Rprecision = self.range_recall_new(preds, label, 0)[0]
-                if Rprecision + Rrecall == 0:
-                    Rf = 0
+                if Rprecision + Rrecall==0:
+                    Rf=0
                 else:
                     Rf = 2 * Rrecall * Rprecision / (Rprecision + Rrecall)
 
@@ -290,82 +277,11 @@ class basic_metricor():
         else:
             Rrecall, ExistenceReward, OverlapReward = self.range_recall_new(label, preds, alpha=0.2)
             Rprecision = self.range_recall_new(preds, label, 0)[0]
-            if Rprecision + Rrecall == 0:
-                RF1 = 0
+            if Rprecision + Rrecall==0:
+                RF1=0
             else:
                 RF1 = 2 * Rrecall * Rprecision / (Rprecision + Rrecall)
         return RF1
-
-    def metric_eTaPR_F1(self, label, score, preds=None):
-        if preds is None:
-            thresholds = np.linspace(score.min(), score.max(), 100)
-            eTaPR_f1_score_list = []
-
-            for threshold in thresholds:
-                preds = (score > threshold).astype(int)
-                if not np.any(preds):
-                    eTaPR_precision, eTaPR_recall, eTaPR_f1_score = 0.0, 0.0, 0.0
-                else:
-                    eTaPR_precision, eTaPR_recall, eTaPR_f1_score = f1_score_etapr.get_eTaPR_fscore(label, preds,
-                                                                                                    theta_p=0.5,
-                                                                                                    theta_r=0.01,
-                                                                                                    delta=0)  # Default Settings from the original paper
-                eTaPR_f1_score_list.append(eTaPR_f1_score)
-
-            eTaPR_F1_Threshold = thresholds[np.argmax(eTaPR_f1_score_list)]
-            eTaPR_F1 = max(eTaPR_f1_score_list)
-
-        else:
-            # preds_int = preds.astype(int)
-            if not np.any(preds):
-                eTaPR_precision, eTaPR_recall, eTaPR_F1 = 0.0, 0.0, 0.0
-            else:
-                eTaPR_precision, eTaPR_recall, eTaPR_F1 = f1_score_etapr.get_eTaPR_fscore(label, preds, theta_p=0.5,
-                                                                                          theta_r=0.01,
-                                                                                          delta=0)  # Default Settings from the original paper
-            debug = 1
-
-        return eTaPR_F1
-
-    def metric_DQE(self, label, score, preds=None, parameter_dict=parameter_dict):
-        if preds is not None:
-            # dqe, dqe_w_tq, dqe_w_fq_near, _w_fq_distant, dqe_w_fq = DQE(label,
-            dqe, dqe_w_tq, dqe_w_fq_near, dqe_w_fq_distant = DQE(label,
-                                                                 preds,
-                                                                 parameter_dict=parameter_dict,
-                                                                 cal_components=True
-                                                                 )
-
-        else:
-            # dqe, dqe_w_tq, dqe_w_fq_near, _w_fq_distant, dqe_w_fq = DQE(label,
-            dqe, dqe_w_tq, dqe_w_fq_near, dqe_w_fq_distant = DQE(label,
-                                                                 score,
-                                                                 parameter_dict=parameter_dict,
-                                                                 cal_components=True
-                                                                 )
-
-        return dqe, dqe_w_tq, dqe_w_fq_near, dqe_w_fq_distant
-
-    def metric_PATE_F1(self, label, score, preds=None, e_buffer=None, d_buffer=None):
-        if preds is None:
-            thresholds = np.linspace(score.min(), score.max(), 100)
-            pate_f1_score_list = []
-
-            for threshold in thresholds:
-                preds = (score > threshold).astype(int)
-                pate_f1 = PATE(label, preds, e_buffer, d_buffer, Big_Data=False, n_jobs=1,
-                               include_zero=False, binary_scores=True)
-                pate_f1_score_list.append(pate_f1)
-
-            pate_f1_Threshold = thresholds[np.argmax(pate_f1_score_list)]
-            PATE_F1 = max(pate_f1_score_list)
-
-        else:
-
-            PATE_F1 = PATE(label, preds, e_buffer, d_buffer, Big_Data=False, n_jobs=1,
-                           include_zero=False, binary_scores=True)
-
-        return PATE_F1
 
     def metric_PointF1PA(self, label, score, preds=None):
 
@@ -389,34 +305,6 @@ class basic_metricor():
             PointF1PA1 = metrics.f1_score(label, adjust_preds)
 
         return PointF1PA1
-
-    def metric_PointF1PA_K(self, label, score, preds=None):
-        labels_ranges = convert_vector_to_events_PATE(label)
-        window_length = len(label)
-        if preds is None:
-            thresholds = np.linspace(score.min(), score.max(), 100)
-            PointF1PA_K_scores = []
-
-            for threshold in thresholds:
-                preds = (score > threshold).astype(int)
-
-                pred_ranges = convert_vector_to_events_PATE(preds)
-                try:
-                    pa_k = PointAdjustKPercent(window_length, labels_ranges, pred_ranges)
-                    pa_k_score = pa_k.get_score()
-                except:
-                    pa_k_score = 0
-
-                PointF1PA_K_scores.append(pa_k_score)
-
-            PointF1PA_K_Threshold = thresholds[np.argmax(PointF1PA_K_scores)]
-            PointF1PA_K = max(PointF1PA_K_scores)
-
-        else:
-            pred_ranges = convert_vector_to_events_PATE(preds)
-            PointF1PA_K = PointAdjustKPercent(window_length, labels_ranges, pred_ranges)
-
-        return PointF1PA_K
 
     def _get_events(self, y_test, outlier=1, normal=0):
         events = dict()
@@ -452,7 +340,7 @@ class basic_metricor():
 
                 tp = np.sum([preds[start:end + 1].any() for start, end in true_events.values()])
                 fn = len(true_events) - tp
-                rec_e = tp / (tp + fn)
+                rec_e = tp/(tp + fn)
                 prec_t = precision_score(label, preds)
                 EventF1PA = 2 * rec_e * prec_t / (rec_e + prec_t + self.eps)
 
@@ -465,30 +353,32 @@ class basic_metricor():
 
             tp = np.sum([preds[start:end + 1].any() for start, end in true_events.values()])
             fn = len(true_events) - tp
-            rec_e = tp / (tp + fn)
+            rec_e = tp/(tp + fn)
             prec_t = precision_score(label, preds)
             EventF1PA1 = 2 * rec_e * prec_t / (rec_e + prec_t + self.eps)
 
         return EventF1PA1
 
     def range_recall_new(self, labels, preds, alpha):
-        p = np.where(preds == 1)[0]  # positions of predicted label==1
+        p = np.where(preds == 1)[0]    # positions of predicted label==1
         range_pred = self.range_convers_new(preds)
         range_label = self.range_convers_new(labels)
 
-        Nr = len(range_label)  # total # of real anomaly segments
+        Nr = len(range_label)    # total # of real anomaly segments
 
         ExistenceReward = self.existence_reward(range_label, preds)
+
 
         OverlapReward = 0
         for i in range_label:
             OverlapReward += self.w(i, p) * self.Cardinality_factor(i, range_pred)
 
-        score = alpha * ExistenceReward + (1 - alpha) * OverlapReward
+
+        score = alpha * ExistenceReward + (1-alpha) * OverlapReward
         if Nr != 0:
-            return score / Nr, ExistenceReward / Nr, OverlapReward / Nr
+            return score/Nr, ExistenceReward/Nr, OverlapReward/Nr
         else:
-            return 0, 0, 0
+            return 0,0,0
 
     def range_convers_new(self, label):
         '''
@@ -515,51 +405,52 @@ class basic_metricor():
 
         score = 0
         for i in labels:
-            if preds[i[0]:i[1] + 1].any():
+            if preds[i[0]:i[1]+1].any():
                 score += 1
         return score
 
     def num_nonzero_segments(self, x):
-        count = 0
-        if x[0] > 0:
-            count += 1
+        count=0
+        if x[0]>0:
+            count+=1
         for i in range(1, len(x)):
-            if x[i] > 0 and x[i - 1] == 0:
-                count += 1
+            if x[i]>0 and x[i-1]==0:
+                count+=1
         return count
 
     def extend_postive_range(self, x, window=5):
         label = x.copy().astype(float)
-        L = self.range_convers_new(label)  # index of non-zero segments
+        L = self.range_convers_new(label)   # index of non-zero segments
         length = len(label)
         for k in range(len(L)):
             s = L[k][0]
             e = L[k][1]
 
-            x1 = np.arange(e, min(e + window // 2, length))
-            label[x1] += np.sqrt(1 - (x1 - e) / (window))
 
-            x2 = np.arange(max(s - window // 2, 0), s)
-            label[x2] += np.sqrt(1 - (s - x2) / (window))
+            x1 = np.arange(e,min(e+window//2,length))
+            label[x1] += np.sqrt(1 - (x1-e)/(window))
+
+            x2 = np.arange(max(s-window//2,0),s)
+            label[x2] += np.sqrt(1 - (s-x2)/(window))
 
         label = np.minimum(np.ones(length), label)
         return label
 
     def extend_postive_range_individual(self, x, percentage=0.2):
         label = x.copy().astype(float)
-        L = self.range_convers_new(label)  # index of non-zero segments
+        L = self.range_convers_new(label)   # index of non-zero segments
         length = len(label)
         for k in range(len(L)):
             s = L[k][0]
             e = L[k][1]
 
-            l0 = int((e - s + 1) * percentage)
+            l0 = int((e-s+1)*percentage)
 
-            x1 = np.arange(e, min(e + l0, length))
-            label[x1] += np.sqrt(1 - (x1 - e) / (2 * l0))
+            x1 = np.arange(e,min(e+l0,length))
+            label[x1] += np.sqrt(1 - (x1-e)/(2*l0))
 
-            x2 = np.arange(max(s - l0, 0), s)
-            label[x2] += np.sqrt(1 - (s - x2) / (2 * l0))
+            x2 = np.arange(max(s-l0,0),s)
+            label[x2] += np.sqrt(1 - (s-x2)/(2*l0))
 
         label = np.minimum(np.ones(length), label)
         return label
@@ -870,6 +761,7 @@ class basic_metricor():
             ap_3d[window] = (AP_range)
         return tpr_3d, fpr_3d, prec_3d, window_3d, sum(auc_3d) / len(window_3d), sum(ap_3d) / len(window_3d)
 
+
     def metric_VUS_pred(self, labels, preds, windowSize):
         window_3d = np.arange(0, windowSize + 1, 1)
         P = np.sum(labels)
@@ -886,7 +778,7 @@ class basic_metricor():
 
             labels_extended = self.sequencing(labels, seq, window)
             L = self.new_sequence(labels_extended, seq, window)
-
+                
             labels = labels_extended.copy()
             existence = 0
 
@@ -905,7 +797,7 @@ class basic_metricor():
 
             P_new = (P + N_labels) / 2
             recall = min(TP / P_new, 1)
-            Precision = TP / N_pred
+            Precision = TP / N_pred            
 
             recall_3d[window] = recall
             prec_3d[window] = Precision

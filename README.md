@@ -32,6 +32,10 @@ discriminative evaluations through experiments with both synthetic and real-worl
 
 [//]: # (## Quick Start)
 
+### Python version 
+Python 3.9.
+
+
 ### Installation
 Install DQE for immediate use in your projects:
 
@@ -45,7 +49,7 @@ Begin by importing the DQE module in your Python script:
 
 
 ```bash
-from DQE import DQE
+from DQE.DQE import DQE
 ```
 
 Prepare your input as arrays of anomaly scores (continues or binary) and binary labels. DQE allows for comprehensive customization of parameters. 
@@ -55,22 +59,21 @@ Please refer to the main code documentation for a full list of configurable opti
 Example usage of DQE:
 
 ```bash
-dqe, dqe_w_gt, dqe_w_near_ngt, dqe_w_distant_ngt, dqe_w_ngt = DQE(labels, output=scores,parameter_dict=parameter_dict)
+dqe = DQE(labels, scores)
 ```
 
 ### Basic Example
 
 ```python 
 import numpy as np
-from DQE import DQE
-
+from DQE.DQE import DQE
 # Example data setup
 labels = np.array([0, 1, 0, 1, 0])
 scores = np.array([0.1, 0.8, 0.1, 0.9, 0.2])
 
 # Compute DQE
 
-dqe, dqe_w_gt, dqe_w_near_ngt, dqe_w_distant_ngt, dqe_w_ngt = DQE(labels, output=scores)
+dqe = DQE(labels, scores)
 
 print(dqe)
 ```
@@ -113,8 +116,10 @@ This script allows for the modification of various scenarios, comparing DQE agai
 
 
 ```bash
-python main_synthetic_data_exp.py
+python main_synthetic_data_exp.py --exp_name "over-counting tp"
 ```
+
+The parameter exp_name can be set in ["over-counting tp", "tp timeliness","fp proximity", "fp insensitivity or overevaluation of duration", "fp duration overevaluation (af)"].
 
 [//]: # (Example of how you use DQE using synthetic data &#40;Binary detector&#41;:)
 
@@ -214,20 +219,29 @@ Dataset Link: https://www.thedatum.org/datasets/TSB-AD-U.zip
 
 Ref: This dataset is made available through the GitHub page of the project "The Elephant in the Room: Towards A Reliable Time-Series Anomaly Detection Benchmark (TSB-AD)": https://github.com/TheDatumOrg/TSB-AD
 
+
 #### Running the Experiments
 
-After downloading, place the unzipped dataset in the same directory. If you store the data in a different location, ensure you update the directory paths in the code to match.
+After downloading, place the unzipped dataset in the same directory of dataset. If you store the data in a different location, ensure you update the directory paths in the code to match.
 
 [//]: # (Navigate to the experiments/RealWorld_Data_Experiments directory to run an experiment. )
 
 [//]: # (Navigate to the experiments/RealWorld_Data_Experiments directory to run an experiment. )
+Execute the Python script get_algorithms_outputs.py for producing algorithms' outputsby entering the following command:
+
+```bash
+python get_algorithms_outputs.py
+```
+
 Execute the Python script real_data_exp_case.py for producing case results in paper by entering the following command:
 
 [//]: # (Execute one of the example Python scripts by entering the following command:)
 
 ```bash
-python real_data_exp_case.py
+python real_data_exp_case.py --exp_name "YAHOO case"
 ```
+
+The parameter exp_name can be set in ["YAHOO case", "WSD case", "partition strategy", "detection rate", "weighting strategy"].
 
 Execute the Python script real_data_exp_all_dataset.py for producing average results in paper by entering the following command:
 
