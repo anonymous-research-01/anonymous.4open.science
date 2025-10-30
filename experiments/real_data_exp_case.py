@@ -17,8 +17,8 @@ if __name__ == '__main__':
 
     ## ArgumentParser
     parser = argparse.ArgumentParser(description='Running DQE real-world experiments (case analysis)')
-    # parser.add_argument('--exp_name', type=str, default='YAHOO case')
-    parser.add_argument('--exp_name', type=str, default='partition strategy')
+    parser.add_argument('--exp_name', type=str, default='YAHOO case')
+    parser.add_argument('--design_strategy', type=str, default="")
     args = parser.parse_args()
 
     dataset_dir = "../dataset/"
@@ -40,8 +40,10 @@ if __name__ == '__main__':
         dataset_methods_file_list = ["808_YAHOO_id_258_WebService_tr_500_1st_142.json"]
         dataset_methods_choose_name_list = ['Sub_LOF', 'Sub_MCD']
 
-        distant_method = "whole"  # fq_distant strategy_1 whole
-        # distant_method = "split" # fq_distant strategy_2 split
+        if args.design_strategy == "whole":
+            distant_method = "whole"  # fq_distant strategy_1 whole
+        else:
+            distant_method = "split" # fq_distant strategy_2 split
 
         parameter_dict["distant_method"] = distant_method
     elif args.exp_name == "detection rate":
@@ -50,8 +52,10 @@ if __name__ == '__main__':
         dataset_methods_file_list = ["094_WSD_id_66_WebService_tr_3309_1st_3914.json"]
         dataset_methods_choose_name_list = ['CNN', 'FFT']
 
-        use_detection_rate = True
-        # use_detection_rate = False
+        if args.design_strategy == "use detection rate":
+            use_detection_rate = True
+        else:
+            use_detection_rate = False
 
         parameter_dict["use_detection_rate"] = use_detection_rate
 
@@ -61,8 +65,10 @@ if __name__ == '__main__':
         dataset_methods_file_list = ["808_YAHOO_id_258_WebService_tr_500_1st_142.json"]
         dataset_methods_choose_name_list = ['SR', 'KMeansAD_U']
 
-        weight_sum_method = "triangle"
-        # weight_sum_method = "equal"
+        if args.design_strategy == "triangle":
+            weight_sum_method = "triangle"
+        else:
+            weight_sum_method = "equal"
 
         parameter_dict["weight_sum_method"] = weight_sum_method
     else:

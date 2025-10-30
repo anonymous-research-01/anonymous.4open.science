@@ -141,7 +141,13 @@ Execute the Python script `real_data_exp_case.py` for producing case results in 
 python real_data_exp_case.py --exp_name "YAHOO case"
 ```
 The parameter `exp_name` can be set to one of the following values: ["YAHOO case", "WSD case", "partition strategy", "detection rate", "weighting strategy"]. 
-In experiments of design strategies, parameter `exp_name` are used in conjunction with the parameter `parameter_dict` in DQE.
+
+In experiments of design strategies, parameter `exp_name` are used in conjunction with the parameter `parameter_dict` in by DQE entering the following command:.
+```bash
+python real_data_exp_case.py --exp_name "partition strategy" --design_strategy "whole"
+```
+
+The parameter `design_strategy` can be set in: ["whole", "split"] for "partition strategy", ["use detection rate", "not use detection rate"] for "detection rate", ["triangle", "equal"] for "weighting strategy".
 
 Execute the Python script `real_data_exp_all_dataset.py` for producing average results in paper by entering the following command:
 

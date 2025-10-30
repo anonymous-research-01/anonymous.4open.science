@@ -28,7 +28,6 @@ if __name__ == '__main__':
     ## ArgumentParser
     parser = argparse.ArgumentParser(description='Running DQE synthetic data experiments')
     parser.add_argument('--exp_name', type=str, default='over-counting tp')
-    parser.add_argument('--print', type=bool, default=False)
     args = parser.parse_args()
     
     metric_name_list = [
@@ -184,8 +183,6 @@ if __name__ == '__main__':
     parameter_dict_new["near_single_side_range"] = near_single_side_range
     
     for i, single_range in enumerate(label_ranges):
-        if args.print:
-            print("============== pred" + str(i))
         label_array = convert_events_to_array_PATE(single_range, time_series_length=ts_len)
         label_array_list.append(label_array)
         score_list_simple = evaluate_all_metrics(label_array,
