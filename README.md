@@ -74,6 +74,8 @@ Example usage of DQE-F1:
 dqe_f1 = DQE_F1(labels, detections)
 ```
 
+### Basic Example
+
 ```python 
 import numpy as np
 from dqe.dqe_metric import DQE_F1
