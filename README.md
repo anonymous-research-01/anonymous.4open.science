@@ -32,16 +32,42 @@ discriminative evaluations through experiments with both synthetic and real-worl
 
 [//]: # (## Quick Start)
 
-### Python version 
-Python 3.9.
+[//]: # ()
+[//]: # (### Python version )
 
+[//]: # (Python 3.9.)
 
-### Installation
-Install DQE for immediate use in your projects:
+## Environment
+
+### Environment Setup
+To use DQE, start by creating and activating a new Conda environment using the following commands:
 
 ```bash
-pip install requirements.txt
+conda create --name dqe_env python=3.9
+conda activate dqe_env
 ```
+
+[//]: # (### Installation)
+
+[//]: # (Install DQE for immediate use in your projects:)
+
+[//]: # ()
+[//]: # (```bash)
+
+[//]: # (pip install -r requirements.txt)
+
+[//]: # (```)
+
+
+### Install Dependencies
+
+Install the required Python packages via:
+
+```bash
+pip install -r requirements.txt
+```
+
+
 
 ## How to use DQE? 
 
@@ -49,12 +75,10 @@ Begin by importing the DQE module in your Python script:
 
 
 ```bash
-from DQE.DQE import DQE
+from dqe.dqe_metric import DQE
 ```
 
-Prepare your input as arrays of anomaly scores (continues or binary) and binary labels. DQE allows for comprehensive customization of parameters. 
-
-Please refer to the main code documentation for a full list of configurable options.
+Prepare your input as arrays of anomaly scores (continues or binary) and binary labels. 
 
 Example usage of DQE:
 
@@ -66,7 +90,7 @@ dqe = DQE(labels, scores)
 
 ```python 
 import numpy as np
-from DQE.DQE import DQE
+from dqe.dqe_metric import DQE
 
 # Example data setup
 labels = np.array([0, 1, 0, 1, 0])
@@ -79,40 +103,34 @@ dqe = DQE(labels, scores)
 print(dqe)
 ```
 
+DQE allows for comprehensive customization of parameters by parameter `parameter_dict`.
+Please refer to the main code documentation for a full list of configurable options.
+
 ---
 
 ## Experiments
 For researchers interested in reproducing the experiments or exploring the evaluation metric further with various data sets:
 
 
-### Environment Setup
-To use DQE, start by creating and activating a new Conda environment using the following commands:
-
-```bash
-conda create --name dqe_env python=3.9
-conda activate dqe_env
-```
-
-[//]: # (### Install Dependencies)
-
-[//]: # (Install the required Python packages via:)
-
-[//]: # ()
 [//]: # (```bash)
 
+[//]: # ()
 [//]: # (git clone https://github.com/raminghorbanii/DQE)
 
+[//]: # ()
 [//]: # (cd DQE)
 
-[//]: # (pip install -r synthetic_exp_requirements.txt)
+[//]: # ()
+[//]: # (pip install -r requirements.txt)
 
+[//]: # ()
 [//]: # (```)
 
-## Conducting Experiments
+[//]: # (## Conducting Experiments)
 
 ### with Synthetic Data
 
-To run experiments on synthetic data, execute the Python script main_synthetic_data_exp.py.
+To run experiments on synthetic data, navigate to the `experiments` directory and execute the Python script `synthetic_data_exp.py`.
 This script allows for the modification of various scenarios, comparing DQE against other established metrics.
 
 
@@ -120,87 +138,9 @@ This script allows for the modification of various scenarios, comparing DQE agai
 python synthetic_data_exp.py --exp_name "over-counting tp"
 ```
 
-The parameter exp_name can be set in ["over-counting tp", "tp timeliness","fp proximity", "fp insensitivity or overevaluation of duration", "fp duration overevaluation (af)"].
+The parameter `exp_name` can be set to one of the following values: 
+["over-counting tp", "tp timeliness", "fp proximity", "fp insensitivity or overevaluation of duration", "fp duration overevaluation (af)"].
 
-[//]: # (Example of how you use DQE using synthetic data &#40;Binary detector&#41;:)
-
-[//]: # (```python)
-
-[//]: # ()
-[//]: # (from utils_Synthetic_exp import evaluate_all_metrics, synthetic_generator)
-
-[//]: # ()
-[//]: # (label_anomaly_ranges = [[40,59]] # You can selec multiple ranges for anomaly. Here we selected one range with the size of 20 points &#40;A_k&#41; )
-
-[//]: # (predicted_ranges = [[30, 49]]  # You can selec multiple ranges for predictions. Here we selected the range the same as Scenario 2, proposed in the original paper. )
-
-[//]: # (vus_zone_size = e_buffer = d_buffer = 20 )
-
-[//]: # ()
-[//]: # (experiment_results = synthetic_generator&#40;label_anomaly_ranges, predicted_ranges, vus_zone_size, e_buffer, d_buffer&#41;)
-
-[//]: # (predicted_array = experiment_results["predicted_array"])
-
-[//]: # (label_array = experiment_results["label_array"])
-
-[//]: # ()
-[//]: # ()
-[//]: # (score_list_simple = evaluate_all_metrics&#40;predicted_array, label_array, vus_zone_size, e_buffer, d_buffer&#41;)
-
-[//]: # (print&#40;score_list_simple&#41;)
-
-[//]: # ()
-[//]: # ()
-[//]: # (```)
-
-
-[//]: # (```bash)
-
-[//]: # ()
-[//]: # (Output:)
-
-[//]: # ()
-[//]: # ('original_F1Score': 0.5,)
-
-[//]: # ('pa_precision': 0.67,)
-
-[//]: # ('pa_recall': 1.0,)
-
-[//]: # ('pa_f_score': 0.8,)
-
-[//]: # ('Rbased_precision': 0.6,)
-
-[//]: # ('Rbased_recall': 0.6,)
-
-[//]: # ('Rbased_f1score': 0.6,)
-
-[//]: # ('eTaPR_precision': 0.75,)
-
-[//]: # ('eTaPR_recall': 0.75,)
-
-[//]: # ('eTaPR_f1_score': 0.75,)
-
-[//]: # ('Affiliation precision': 0.97,)
-
-[//]: # ('Affiliation recall': 0.99,)
-
-[//]: # ('Affliation F1score': 0.98,)
-
-[//]: # ('VUS_ROC': 0.79,)
-
-[//]: # ('VUS_PR': 0.72,)
-
-[//]: # ('AUC': 0.74,)
-
-[//]: # ('AUC_PR': 0.51,)
-
-[//]: # ()
-[//]: # ('DQE': 0.76,)
-
-[//]: # ('DQE-F1': 0.75})
-
-[//]: # ()
-[//]: # (```)
 
 ### with Real-World Data
 
@@ -223,28 +163,27 @@ Ref: This dataset is made available through the GitHub page of the project "The 
 
 #### Running the Experiments
 
-After downloading, place the unzipped dataset in the same directory of dataset. If you store the data in a different location, ensure you update the directory paths in the code to match.
+After downloading, place the unzipped dataset in the directory `dataset`. If you store the data in a different location, ensure you update the directory paths in the code to match.
 
 [//]: # (Navigate to the experiments/RealWorld_Data_Experiments directory to run an experiment. )
 
 [//]: # (Navigate to the experiments/RealWorld_Data_Experiments directory to run an experiment. )
-Execute the Python script get_algorithms_outputs.py for producing algorithms' outputsby entering the following command:
+ Navigate to the `experiments` directory and execute the Python script `get_algorithms_outputs.py` for producing algorithms' outputs by entering the following command:
 
 ```bash
 python get_algorithms_outputs.py
 ```
 
-Execute the Python script real_data_exp_case.py for producing case results in paper by entering the following command:
+Execute the Python script `real_data_exp_case.py` for producing case results in paper by entering the following command:
 
 [//]: # (Execute one of the example Python scripts by entering the following command:)
 
 ```bash
 python real_data_exp_case.py --exp_name "YAHOO case"
 ```
+The parameter `exp_name` can be set to one of the following values: ["YAHOO case", "WSD case", "partition strategy", "detection rate", "weighting strategy"].
 
-The parameter exp_name can be set in ["YAHOO case", "WSD case", "partition strategy", "detection rate", "weighting strategy"].
-
-Execute the Python script real_data_exp_all_dataset.py for producing average results in paper by entering the following command:
+Execute the Python script `real_data_exp_all_dataset.py` for producing average results in paper by entering the following command:
 
 
 ```bash

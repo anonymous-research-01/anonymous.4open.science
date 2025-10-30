@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from DQE.DQE import DQE
+from dqe.dqe_metric import DQE
 from config.dqe_config import parameter_dict
 from metrics.metrics_pa import PointAdjustKPercent, DelayThresholdedPointAdjust, LatencySparsityAware
 from metrics.pate.PATE_metric import PATE

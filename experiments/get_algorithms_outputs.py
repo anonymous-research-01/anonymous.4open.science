@@ -1,9 +1,12 @@
-import time
 import os
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 import pandas as pd
 import torch
 import random, argparse
 import json
+import time
+
 
 from sklearn.preprocessing import MinMaxScaler
 from experiments.TSB_AD.model_wrapper import *
@@ -26,22 +29,25 @@ print("cuDNN Version: ", torch.backends.cudnn.version())
 if __name__ == '__main__':
     ## ArgumentParser
     parser = argparse.ArgumentParser(description='Running TSB-AD')
+    parser.add_argument('--print', type=bool, default=False)
     args = parser.parse_args()
 
     filename_list = []
     filter_ad_pool = ['SR', 'KMeansAD_U', 'Sub_KNN', 'TimesNet', 'CNN', 'Sub_LOF', 'FFT', 'Sub_MCD']
-    # print(filter_ad_pool)
+    if args.print:
+        print(filter_ad_pool)
 
-    df_exp_files = pd.read_csv("dataset/File_List/exp_file_list.csv").dropna()
+    df_exp_files = pd.read_csv("../dataset/File_List/exp_file_list.csv").dropna()
     df_exp_files_array = df_exp_files.iloc[:].values
     df_exp_files_list = df_exp_files_array.reshape(df_exp_files_array.shape[0])
-    directory_path = "dataset/TSB-AD-U/"
-    file_list_file = "dataset/File_List/TSB-AD-U.csv"
+    directory_path = "../dataset/TSB-AD-U/"
+    file_list_file = "../dataset/File_List/TSB-AD-U.csv"
     df = pd.read_csv(file_list_file).dropna()
     file_list_ndarray = df[:].values
     file_list = file_list_ndarray.reshape(file_list_ndarray.shape[0])
 
-    # print(file_list)
+    if args.print:
+        print(file_list)
 
     dataset_choose_list = [
         # "TODS",
@@ -55,7 +61,8 @@ if __name__ == '__main__':
     ]
 
     cal_model_num = len(filter_ad_pool)
-    # print(cal_model_num)
+    if args.print:
+        print(cal_model_num)
 
     for i, file_name in enumerate(file_list):
         dataset_name = file_name.split('.')[0].split('_')[1]
@@ -155,3 +162,5 @@ if __name__ == '__main__':
 
         with open(json_file_seve_path, "w") as json_file:
             json_file.write(json_str_only_list)
+
+    print(f"Results are saved to ../dataset/all_methods_pred_res_min_max_scale")

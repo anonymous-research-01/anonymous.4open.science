@@ -1,5 +1,7 @@
 import json
 import os
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 import numpy as np
 import pandas as pd
 import time
@@ -16,11 +18,11 @@ from evaluation.slidingWindows import find_length_rank
 if __name__ == '__main__':
     ## ArgumentParser
     parser = argparse.ArgumentParser(description='Running DQE real-world experiments')
-    parser.add_argument('--print', type=bool, default=True)
-    parser.add_argument('--test_time', type=bool, default=True)
+    parser.add_argument('--print', type=bool, default=False)
+    parser.add_argument('--test_time', type=bool, default=False)
     args = parser.parse_args()
 
-    dataset_dir = "dataset/"
+    dataset_dir = "../dataset/"
     file_path = dataset_dir + "all_methods_pred_res_min_max_scale/"
 
     ori_data_path = dataset_dir + "TSB-AD-U/"
@@ -100,8 +102,10 @@ if __name__ == '__main__':
                 print(" all method time_end - time_start",time_end - time_start)
             file_method_metric_dict[data_set_choose_file][dataset_methods_choose_name] = metric_score_dict
 
+
     # cal mean res
-    print("len(file_method_metric_dict)", len(file_method_metric_dict))
+    if args.print:
+        print("len(file_method_metric_dict)", len(file_method_metric_dict))
 
     # cal number each dataset
     dataset_count_dict = {}
@@ -113,8 +117,8 @@ if __name__ == '__main__':
             dataset_count_dict[dataset_name_to_find] = 0
 
         dataset_count_dict[dataset_name_to_find] += 1
-
-    print("dataset_count_dict", dataset_count_dict)
+    if args.print:
+        print("dataset_count_dict", dataset_count_dict)
 
     metric_name_list = [
         'Standard-F1',
@@ -139,9 +143,9 @@ if __name__ == '__main__':
     method_name_index_dict = {}
     for i, method_name in enumerate(dataset_methods_choose_name_list):
         method_name_index_dict[method_name] = i
-
-    print()
-    print("method_name_index_dict",method_name_index_dict)
+    if args.print:
+        print()
+        print("method_name_index_dict",method_name_index_dict)
 
     dataset_name_score_list_dict = {
         # 'Exathlon': {},
@@ -287,13 +291,14 @@ if __name__ == '__main__':
     dataset_name_score_list_dict_copy_index_dict_sort = copy.deepcopy(
         dataset_name_score_list_dict_sort)  # copy structure and simplify ranking info item
     metric_score_list_dict_copy_index_dict_sort = copy.deepcopy(metric_score_list_dict_sort)
-
-    print("single dataset rankings res")
+    if args.print:
+        print("single dataset rankings res")
     for id_dateset_name, (dateset_name, dateset_score_dict) in enumerate(dataset_name_score_list_dict_sort.items()):
         # for a dataset
         # find case
-        print()
-        print("dateset_name", dateset_name)
+        if args.print:
+            print()
+            print("dateset_name", dateset_name)
         for id_metric_name, (metric_name, metric_score_dict_list) in enumerate(dateset_score_dict.items()):
             add_info_list = []
             sort_index_info_list = []
@@ -311,11 +316,11 @@ if __name__ == '__main__':
             dataset_name_score_list_dict_sort[dateset_name][metric_name] = add_info_list
 
             dataset_name_score_list_dict_copy_index_dict_sort[dateset_name][metric_name] = sort_index_info_list
-
-            print(" " + metric_name, add_info_list)
-
-    print()
-    print("all datasets rankings res")
+            if args.print:
+                print(" " + metric_name, add_info_list)
+    if args.print:
+        print()
+        print("all datasets rankings res")
 
     for id_metric_name, (metric_name, metric_score_dict_list) in enumerate(metric_score_list_dict_sort.items()):
         add_info_list = []
@@ -335,8 +340,8 @@ if __name__ == '__main__':
         metric_score_list_dict_sort[metric_name] = add_info_list
 
         metric_score_list_dict_copy_index_dict_sort[metric_name] = sort_index_info_list
-
-        print(" " + metric_name, add_info_list)
+        if args.print:
+            print(" " + metric_name, add_info_list)
 
     # patch all datasets result
     dataset_name_score_list_dict_sort["all_dataset"] = metric_score_list_dict_sort
@@ -349,8 +354,8 @@ if __name__ == '__main__':
         def _format(value, level=0):
             if isinstance(value, list):
                 elements = [json.dumps(item, ensure_ascii=False) for item in value]
-                max_length = max(len(item) for item in elements)  # 计算最长的元素长度
-                formatted_elements = ", ".join(item.ljust(max_length) for item in elements)  # 横向对齐元素
+                max_length = max(len(item) for item in elements)
+                formatted_elements = ", ".join(item.ljust(max_length) for item in elements)
                 return f"[{formatted_elements}]"
             elif isinstance(value, dict):
                 lines = []
@@ -370,9 +375,11 @@ if __name__ == '__main__':
     with open(res_seve_path, "w", encoding="utf-8") as file:
         write_data = custom_json_formatter(dataset_name_score_list_dict_sort)
         file.write(write_data)
-    print()
-    print("write_data", write_data)
-    print(f"write data to {res_seve_path}")
+
+    if args.print:
+        print()
+        print("write_data", write_data)
+    print(f"Results are saved to {res_seve_path}")
 
 
 

@@ -6,7 +6,7 @@ import copy
 from metrics.eTaPR_pkg import f1_score_etapr
 from metrics.metrics_pa import PointAdjustKPercent
 from metrics.pate.PATE_metric import PATE
-from DQE.DQE import DQE
+from dqe.dqe_metric import DQE
 from config.dqe_config import parameter_dict
 from metrics.pate.PATE_utils import convert_vector_to_events_PATE
 

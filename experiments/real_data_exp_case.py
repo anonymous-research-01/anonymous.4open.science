@@ -1,5 +1,7 @@
 import json
 import os
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 import numpy as np
 import pandas as pd
 import time
@@ -15,11 +17,11 @@ if __name__ == '__main__':
     ## ArgumentParser
     parser = argparse.ArgumentParser(description='Running DQE real-world experiments (case analysis)')
     parser.add_argument('--exp_name', type=str, default='YAHOO case')
-    parser.add_argument('--print', type=bool, default=True)
-    parser.add_argument('--test_time', type=bool, default=True)
+    parser.add_argument('--print', type=bool, default=False)
+    parser.add_argument('--test_time', type=bool, default=False)
     args = parser.parse_args()
 
-    dataset_dir = "dataset/"
+    dataset_dir = "../dataset/"
     file_path = dataset_dir + "all_methods_pred_res_min_max_scale/"
 
     ori_data_path = dataset_dir + "TSB-AD-U/"
@@ -111,7 +113,7 @@ if __name__ == '__main__':
 
     with open(res_seve_path, 'w', encoding='utf-8') as json_file:
         json.dump(file_method_metric_dict, json_file, indent=4, ensure_ascii=False)
-    print(f"write to {res_seve_path}")
+    print(f"Results are saved to {res_seve_path}")
 
 
 
