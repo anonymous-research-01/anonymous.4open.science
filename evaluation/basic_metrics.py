@@ -322,24 +322,25 @@ class basic_metricor():
                 eTaPR_precision, eTaPR_recall, eTaPR_F1 = f1_score_etapr.get_eTaPR_fscore(label, preds, theta_p=0.5,
                                                                                           theta_r=0.01,
                                                                                           delta=0)  # Default Settings from the original paper
-            debug = 1
 
         return eTaPR_F1
 
-    def metric_DQE(self, label, score, preds=None, parameter_dict=parameter_dict):
+    def metric_DQE(self, label, score, preds=None, parameter_dict=None, near_single_side_range=None):
         if preds is not None:
             dqe, dqe_w_tq, dqe_w_fq_near, dqe_w_fq_distant = DQE(label,
-                                                                 preds,
-                                                                 parameter_dict=parameter_dict,
-                                                                 cal_components=True
-                                                                 )
+                          preds,
+                          parameter_dict=parameter_dict,
+                          near_single_side_range=near_single_side_range,
+                          cal_components=True
+                          )
 
         else:
             dqe, dqe_w_tq, dqe_w_fq_near, dqe_w_fq_distant = DQE(label,
-                                                                 score,
-                                                                 parameter_dict=parameter_dict,
-                                                                 cal_components=True
-                                                                 )
+                          score,
+                          parameter_dict=parameter_dict,
+                          near_single_side_range=near_single_side_range,
+                          cal_components=True
+                          )
 
         return dqe, dqe_w_tq, dqe_w_fq_near, dqe_w_fq_distant
 

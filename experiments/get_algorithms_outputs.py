@@ -29,13 +29,11 @@ print("cuDNN Version: ", torch.backends.cudnn.version())
 if __name__ == '__main__':
     ## ArgumentParser
     parser = argparse.ArgumentParser(description='Running TSB-AD')
-    parser.add_argument('--print', type=bool, default=False)
     args = parser.parse_args()
 
     filename_list = []
     filter_ad_pool = ['SR', 'KMeansAD_U', 'Sub_KNN', 'TimesNet', 'CNN', 'Sub_LOF', 'FFT', 'Sub_MCD']
-    if args.print:
-        print(filter_ad_pool)
+    print(filter_ad_pool)
 
     df_exp_files = pd.read_csv("../dataset/File_List/exp_file_list.csv").dropna()
     df_exp_files_array = df_exp_files.iloc[:].values
@@ -45,9 +43,6 @@ if __name__ == '__main__':
     df = pd.read_csv(file_list_file).dropna()
     file_list_ndarray = df[:].values
     file_list = file_list_ndarray.reshape(file_list_ndarray.shape[0])
-
-    if args.print:
-        print(file_list)
 
     dataset_choose_list = [
         # "TODS",
@@ -61,8 +56,6 @@ if __name__ == '__main__':
     ]
 
     cal_model_num = len(filter_ad_pool)
-    if args.print:
-        print(cal_model_num)
 
     for i, file_name in enumerate(file_list):
         dataset_name = file_name.split('.')[0].split('_')[1]

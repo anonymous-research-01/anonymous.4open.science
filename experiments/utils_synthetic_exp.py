@@ -10,7 +10,7 @@ from metrics.pate.PATE_utils import convert_events_to_array_PATE, categorize_pre
 from evaluation.metrics import basic_metricor, generate_curve
 
 
-def evaluate_all_metrics(pred, labels, vus_zone_size=20, e_buffer=20, d_buffer=20, parameter_dict=parameter_dict):
+def evaluate_all_metrics(pred, labels, vus_zone_size=20, e_buffer=20, d_buffer=20, parameter_dict=parameter_dict, near_single_side_range=125):
     window_length = len(labels)
     grader = basic_metricor()
 
@@ -41,8 +41,7 @@ def evaluate_all_metrics(pred, labels, vus_zone_size=20, e_buffer=20, d_buffer=2
     PointF1 = grader.metric_PointF1(labels, score=pred, preds=pred)
 
     # DQE
-    # dqe, dqe_w_tq, dqe_w_fq_near, dqe_w_distant_ngt, dqe_w_fq = DQE(labels,pred,parameter_dict=parameter_dict)
-    dqe = DQE(labels, pred, parameter_dict=parameter_dict)
+    dqe = DQE(labels,pred,parameter_dict=parameter_dict,near_single_side_range=near_single_side_range)
 
     labels_ranges = convert_vector_to_events_PATE(labels)
     pred_ranges = convert_vector_to_events_PATE(pred)
@@ -91,13 +90,11 @@ def evaluate_all_metrics(pred, labels, vus_zone_size=20, e_buffer=20, d_buffer=2
         "AUC_PR": AUC_PR,
 
         "PATE": pate,
-        # "PATE-F1": pate_f1,
 
         "dqe": dqe,
         # "dqe_w_tq": dqe_w_tq,
         # "dqe_w_fq_near": dqe_w_fq_near,
         # "dqe_w_fq_distant": dqe_w_distant_ngt,
-        # "dqe_w_fq": dqe_w_fq,
     }
 
     for key in score_list_simple:

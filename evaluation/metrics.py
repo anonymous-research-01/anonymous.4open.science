@@ -1,5 +1,4 @@
 import time
-import copy
 
 from .basic_metrics import basic_metricor, generate_curve
 from metrics.pate.PATE_metric import PATE
@@ -7,7 +6,7 @@ from config.dqe_config import parameter_dict
 
 
 
-def get_metrics(score, labels, slidingWindow=100, pred=None, version='opt', thre=250,print_msg=False,test_time=False):
+def get_metrics(score, labels, slidingWindow=100, pred=None, version='opt', thre=250):
     metrics = {}
 
     th_100_exp_list = [
@@ -15,16 +14,13 @@ def get_metrics(score, labels, slidingWindow=100, pred=None, version='opt', thre
     'AUC-ROC',
     'AUC-PR',
 
-    # 'PA-F1',
     "PA-K",
 
     'VUS-ROC',
     'VUS-PR',
     'PATE',
-    # 'PATE_F1',
 
     'R-based-F1',
-    # 'Event-based-F1',
     'eTaPR_F1',
     'Affiliation-F',
     "DQE",
@@ -38,57 +34,25 @@ def get_metrics(score, labels, slidingWindow=100, pred=None, version='opt', thre
     '''
     grader = basic_metricor()
     if "AUC-ROC" in exp_list:
-        if test_time:
-            time_start = time.time()
         AUC_ROC = grader.metric_ROC(labels, score)
-        if test_time:
-            time_end = time.time()
-        if print_msg:
-            print("AUC_ROC time_end - time_start", time_end - time_start)
         metrics['AUC-ROC'] = AUC_ROC
 
     if "AUC-PR" in exp_list:
-        if test_time:
-            time_start = time.time()
         AUC_PR = grader.metric_PR(labels, score)
-        if test_time:
-            time_end = time.time()
-        if print_msg:
-            print("AUC_PR time_end - time_start", time_end - time_start)
         metrics['AUC-PR'] = AUC_PR
 
     if "VUS-PR"  in exp_list and "VUS-ROC" in exp_list:
-        if test_time:
-            time_start = time.time()
         _, _, _, _, _, _,VUS_ROC, VUS_PR = generate_curve(labels.astype(int), score, slidingWindow, version, thre)
-        if test_time:
-            time_end = time.time()
-        if print_msg:
-            print("VUS_ROC VUS_PR time_end - time_start", time_end - time_start)
         metrics['VUS-PR'] = VUS_PR
         metrics['VUS-ROC'] = VUS_ROC
 
     if "PATE" in exp_list:
-        if test_time:
-            time_start = time.time()
         e_buffer = d_buffer = slidingWindow//2
         pate = PATE(labels, score, e_buffer, d_buffer, Big_Data=True, n_jobs=1, include_zero=False,num_desired_thresholds=thre)
-        if test_time:
-            time_end = time.time()
-        if print_msg:
-            print("pate time_end - time_start", time_end - time_start)
         metrics['PATE'] = pate
 
     if "DQE" in exp_list:
-        if test_time:
-            time_start = time.time()
-        parameter_dict_adapt = copy.deepcopy(parameter_dict)
-        parameter_dict_adapt["near_single_side_range"] = slidingWindow
-        dqe, dqe_w_tq, dqe_w_fq_near, dqe_w_fq_distant = grader.metric_DQE(labels, score, preds=pred, parameter_dict=parameter_dict_adapt)
-        if test_time:
-            time_end = time.time()
-        if print_msg:
-            print("dqe time_end - time_start", time_end - time_start)
+        dqe, dqe_w_tq, dqe_w_fq_near, dqe_w_fq_distant = grader.metric_DQE(labels, score, preds=pred, parameter_dict=parameter_dict, near_single_side_range=slidingWindow)
         metrics['dqe'] = dqe
         metrics['dqe_w_tq'] = dqe_w_tq
         metrics['dqe_w_fq_near'] = dqe_w_fq_near

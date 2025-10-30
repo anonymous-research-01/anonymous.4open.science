@@ -17,8 +17,6 @@ if __name__ == '__main__':
     ## ArgumentParser
     parser = argparse.ArgumentParser(description='Running DQE real-world experiments (case analysis)')
     parser.add_argument('--exp_name', type=str, default='YAHOO case')
-    parser.add_argument('--print', type=bool, default=False)
-    parser.add_argument('--test_time', type=bool, default=False)
     args = parser.parse_args()
 
     dataset_dir = "../dataset/"
@@ -56,6 +54,7 @@ if __name__ == '__main__':
         # YAHOO case methods
         dataset_methods_choose_name_list = ['SR', 'KMeansAD_U', 'Sub_KNN', 'TimesNet']
 
+    print(file_msg)
 
     file_path_dict = {}
     for file_name in dataset_methods_file_list:
@@ -71,9 +70,6 @@ if __name__ == '__main__':
             data = json.load(file)
 
         for j, dataset_methods_choose_name in enumerate(dataset_methods_choose_name_list):
-            if args.print:
-                print()
-
             methods_choose_outputs = data[dataset_methods_choose_name]
 
             gt_array = data["gt"]
@@ -88,25 +84,11 @@ if __name__ == '__main__':
             ori_data = df.iloc[:, 0:-1].values.astype(float)
             label = df['Label'].astype(int).to_numpy()
             slidingWindow = find_length_rank(ori_data, rank=1)
-            if args.print:
-                print("slidingWindow",slidingWindow)
 
             output = methods_choose_outputs
             output_array = np.array(output)
 
-            if args.print:
-                print("file index,method index",i,j)
-                print(" dataset_file",data_set_choose_file)
-                print(" methods_name",dataset_methods_choose_name)
-            if args.test_time:
-                time_start = time.time()
             metric_score_dict = get_metrics(output_array, label, slidingWindow=slidingWindow,thre=100)
-            if args.print:
-                print(" metric_score_dict",metric_score_dict)
-            if args.test_time:
-                time_end = time.time()
-            if args.print:
-                print(" all method time_end - time_start",time_end - time_start)
             file_method_metric_dict[data_set_choose_file][dataset_methods_choose_name] = metric_score_dict
 
     res_seve_path = res_save_dir + "metric_calc_res_" + file_msg + ".json"

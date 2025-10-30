@@ -28,8 +28,7 @@ if __name__ == '__main__':
     ## ArgumentParser
     parser = argparse.ArgumentParser(description='Running DQE synthetic data experiments')
     parser.add_argument('--exp_name', type=str, default='over-counting tp')
-    parser.add_argument('--print', type=bool, default=True)
-    parser.add_argument('--test_time', type=bool, default=True)
+    parser.add_argument('--print', type=bool, default=False)
     args = parser.parse_args()
     
     metric_name_list = [
@@ -43,12 +42,10 @@ if __name__ == '__main__':
         # "dqe_w_tq",
         # "dqe_w_fq_near",
         # "dqe_w_fq_distant",
-        # "dqe_w_fq",
-    
+
         'Affliation F1score',
         'eTaPR_f1_score',
         'original_F1Score',
-        # 'pa_f_score',
         'pa_k_score',
         'dtpa_f_score',
         'ls_f_score',
@@ -58,7 +55,6 @@ if __name__ == '__main__':
     
     name_dict = {
         "original_F1Score": "Original-F",
-        # "pa_f_score": "PA-F",
         "pa_k_score": "\%K-PA-F",
         "dtpa_f_score":"DTPA-F",
         "ls_f_score":"LS-F",
@@ -70,8 +66,7 @@ if __name__ == '__main__':
         # "dqe_w_tq": "DQE_w_tq",
         # "dqe_w_fq_near": "DQE_w_fq_near",
         # "dqe_w_fq_distant": "DQE_w_fq_distant",
-        # "dqe_w_fq": "DQE_w_fq",
-    
+
         "VUS_ROC": "VUS-ROC",
         "VUS_PR": "VUS-PR",
         "AUC": "AUC-ROC",
@@ -83,7 +78,6 @@ if __name__ == '__main__':
     choose_metric_name_order_list = [
         "VUS-ROC", "VUS-PR", "AUC-ROC", "AUC-PR", "PATE",
         "Original-F",
-        # "PA-F",
         "\%K-PA-F",
         "RF", "eTaF", "AF",
 
@@ -99,14 +93,10 @@ if __name__ == '__main__':
         json_file_name = "over-counting tp"
         vus_zone_size = e_buffer = d_buffer = near_single_side_range = 3
         adjust_dis = 20
-        label_ranges = [
-            [[3 + adjust_dis, 4 + adjust_dis], [11 + adjust_dis, 12 + adjust_dis], [19 + adjust_dis, 28 + adjust_dis]],
-            [[19 + adjust_dis, 28 + adjust_dis]],
-            [[3 + adjust_dis, 4 + adjust_dis], [11 + adjust_dis, 12 + adjust_dis]]]
+        label_ranges = [[[23, 24], [31, 32], [39, 48]], [[39, 48]], [[23, 24], [31, 32]]] # The first is GT, and the following are detections.
         ts_len = 80
         choose_metric_name_order_list = [
             "Original-F", "AUC-ROC", "AUC-PR",
-            # "PA-F",
             "DTPA-F",
             "LS-F",
             "\%K-PA-F",
@@ -118,27 +108,7 @@ if __name__ == '__main__':
     # tp timeliness
     if args.exp_name == "tp timeliness":
         ts_len = 300
-        label_ranges = [
-            [
-                [140, 159],
-            ],
-            # case1
-            [
-                [(140 + 159 + 1) // 2 - 6 - 1, (140 + 159 + 1) // 2 - 6 + 1],
-            ],
-            [
-                [(140 + 159 + 1) // 2 + 5 - 1, (140 + 159 + 1) // 2 + 5 + 1],
-            ],
-            # case2
-            [
-                [(140 + 159 + 1) // 2 - 6 - 1, (140 + 159 + 1) // 2 - 6 + 1],
-                [(140 + 159 + 1) // 2 - 1 - 1, (140 + 159 + 1) // 2 - 1 + 1],
-            ],
-            [
-                [(140 + 159 + 1) // 2 - 6 - 1, (140 + 159 + 1) // 2 - 6 + 1],
-                [(140 + 159 + 1) // 2 + 5 - 1, (140 + 159 + 1) // 2 + 5 + 1],
-            ]
-        ]
+        label_ranges = [[[140, 159]], [[143, 145]], [[154, 156]], [[143, 145], [148, 150]], [[143, 145], [154, 156]]]
         json_file_name = "tp timeliness"
         choose_metric_name_order_list = [
             "AF",
@@ -155,22 +125,12 @@ if __name__ == '__main__':
     if args.exp_name == "fp proximity":
         ts_len = 110
 
-        label_ranges = [[[30, 39]],
-    
-                        [[43 - 1, 46 - 3]],
-                        [[49 - 1 - 2, 52 - 3 - 2]],
-                        [[55 - 1 - 4, 58 - 3 - 4]],
-    
-                        [[70, 71]],
-                        [[80, 81]],
-                        [[90, 91]],
-                        ]
+        label_ranges = [[[30, 39]], [[42, 43]], [[46, 47]], [[50, 51]], [[70, 71]], [[80, 81]], [[90, 91]]]
         json_file_name = "fp proximity"
         vus_zone_size = e_buffer = d_buffer = near_single_side_range = 20
     
         choose_metric_name_order_list = [
             "Original-F",
-            # "PA-F",
             "\%K-PA-F",
             "RF", "eTaF",
             "AUC-PR", "AUC-ROC",
@@ -182,22 +142,7 @@ if __name__ == '__main__':
     # fp insensitivity or overevaluation of duration
     if args.exp_name == "fp insensitivity or overevaluation of duration":
         ts_len = 300
-        label_ranges = [
-            [
-                [140, 159],
-            ],
-            [
-                [159 + 1 + 11 - 8 - 1, 159 + 1 + 11 - 8 + 1],
-                [159 + 1 + 11 + 8 - 1, 159 + 1 + 11 + 8 + 1],
-            ],
-            [
-                [159 + 1 + 11 - 8 - 1, 159 + 1 + 11 - 8 + 1],
-                [159 + 1 + 11 - 4 - 1, 159 + 1 + 11 - 4 + 1],
-                [159 + 1 + 11 - 0 - 1, 159 + 1 + 11 - 0 + 1],
-                [159 + 1 + 11 + 4 - 1, 159 + 1 + 11 + 4 + 1],
-                [159 + 1 + 11 + 8 - 1, 159 + 1 + 11 + 8 + 1],
-            ],
-        ]
+        label_ranges = [[[140, 159]], [[162, 164], [178, 180]], [[162, 164], [166, 168], [170, 172], [174, 176], [178, 180]]]
         json_file_name = "fp insensitivity or overevaluation of duration"
 
         choose_metric_name_order_list = [
@@ -217,9 +162,7 @@ if __name__ == '__main__':
     # fp duration overevaluation (af)
     if args.exp_name == "fp duration overevaluation (af)":
         ts_len = 38
-        label_ranges = [[[29, 30], [35, 36]],
-                        [[25, 26], [35, 36]],
-                        [[29, 30], [34, 35]]]
+        label_ranges = [[[29, 30], [35, 36]], [[25, 26], [35, 36]], [[29, 30], [34, 35]]]
         json_file_name = "fp duration overevaluation (af)"
         vus_zone_size = e_buffer = d_buffer = near_single_side_range = 3
     
@@ -241,7 +184,8 @@ if __name__ == '__main__':
     parameter_dict_new["near_single_side_range"] = near_single_side_range
     
     for i, single_range in enumerate(label_ranges):
-        # print("============== pred" + str(i))
+        if args.print:
+            print("============== pred" + str(i))
         label_array = convert_events_to_array_PATE(single_range, time_series_length=ts_len)
         label_array_list.append(label_array)
         score_list_simple = evaluate_all_metrics(label_array,
@@ -250,7 +194,7 @@ if __name__ == '__main__':
                                                  e_buffer,
                                                  d_buffer,
                                                  parameter_dict=parameter_dict_new,
-                                                 )
+                                                 near_single_side_range=near_single_side_range)
 
         selected_dict = {}
         for j, paint_name in enumerate(metric_name_list):
