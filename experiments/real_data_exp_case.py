@@ -10,13 +10,15 @@ import argparse
 
 from evaluation.metrics import get_metrics
 from evaluation.slidingWindows import find_length_rank
+from config.dqe_config import parameter_dict
 
 
 if __name__ == '__main__':
 
     ## ArgumentParser
     parser = argparse.ArgumentParser(description='Running DQE real-world experiments (case analysis)')
-    parser.add_argument('--exp_name', type=str, default='YAHOO case')
+    # parser.add_argument('--exp_name', type=str, default='YAHOO case')
+    parser.add_argument('--exp_name', type=str, default='partition strategy')
     args = parser.parse_args()
 
     dataset_dir = "../dataset/"
@@ -37,16 +39,32 @@ if __name__ == '__main__':
         file_msg = "808_YAHOO_partition_strategy"
         dataset_methods_file_list = ["808_YAHOO_id_258_WebService_tr_500_1st_142.json"]
         dataset_methods_choose_name_list = ['Sub_LOF', 'Sub_MCD']
+
+        distant_method = "whole"  # fq_distant strategy_1 whole
+        # distant_method = "split" # fq_distant strategy_2 split
+
+        parameter_dict["distant_method"] = distant_method
     elif args.exp_name == "detection rate":
         # Impact Analysis of the Detection Rate
         file_msg = "094_WSD_detection_rate"
         dataset_methods_file_list = ["094_WSD_id_66_WebService_tr_3309_1st_3914.json"]
         dataset_methods_choose_name_list = ['CNN', 'FFT']
+
+        use_detection_rate = True
+        # use_detection_rate = False
+
+        parameter_dict["use_detection_rate"] = use_detection_rate
+
     elif args.exp_name == "weighting strategy":
         # Impact Analysis of the Triangular Weighting Strategy
         file_msg = "808_YAHOO_weighting_strategy"
         dataset_methods_file_list = ["808_YAHOO_id_258_WebService_tr_500_1st_142.json"]
         dataset_methods_choose_name_list = ['SR', 'KMeansAD_U']
+
+        weight_sum_method = "triangle"
+        # weight_sum_method = "equal"
+
+        parameter_dict["weight_sum_method"] = weight_sum_method
     else:
         # YAHOO case
         file_msg = "808_YAHOO_case_analyze"
@@ -88,7 +106,7 @@ if __name__ == '__main__':
             output = methods_choose_outputs
             output_array = np.array(output)
 
-            metric_score_dict = get_metrics(output_array, label, slidingWindow=slidingWindow,thre=100)
+            metric_score_dict = get_metrics(output_array, label, slidingWindow=slidingWindow,thre=100, parameter_dict=parameter_dict)
             file_method_metric_dict[data_set_choose_file][dataset_methods_choose_name] = metric_score_dict
 
     res_seve_path = res_save_dir + "metric_calc_res_" + file_msg + ".json"

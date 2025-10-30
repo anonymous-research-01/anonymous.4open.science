@@ -1,4 +1,4 @@
-import time
+import copy
 
 from .basic_metrics import basic_metricor, generate_curve
 from metrics.pate.PATE_metric import PATE
@@ -6,10 +6,15 @@ from config.dqe_config import parameter_dict
 
 
 
-def get_metrics(score, labels, slidingWindow=100, pred=None, version='opt', thre=250):
+def get_metrics(score, labels, slidingWindow=100, pred=None, version='opt', thre=250,parameter_dict=None):
     metrics = {}
 
-    th_100_exp_list = [
+    if parameter_dict is not None:
+        th_100_exp_list = [
+            "DQE",
+        ]
+    else:
+        th_100_exp_list = [
     'Standard-F1',
     'AUC-ROC',
     'AUC-PR',

@@ -515,8 +515,12 @@ def DQE_F1_section(tq_section_list, prediction_section_list, ts_len, gt_num=None
                     fq_dis_section_list[i + 1] = [fq_near_d_section_i_next_end, ts_len]
                 else:
                     fq_dis_section_i_mid = (fq_near_d_i_end + fq_near_e_section_i_start) / 2
-                    fq_dis_d_section_list[i] = [fq_near_d_i_end, fq_dis_section_i_mid]
-                    fq_dis_e_section_list[i] = [fq_dis_section_i_mid, fq_near_e_section_i_start]
+                    # new
+                    # fq_dis_d_section_list[i] = [fq_near_d_i_end, fq_dis_section_i_mid]
+                    # fq_dis_e_section_list[i] = [fq_dis_section_i_mid, fq_near_e_section_i_start]
+                    # ori
+                    fq_dis_d_section_list[i] = [fq_dis_section_i_mid, fq_near_e_section_i_start]
+                    fq_dis_e_section_list[i] = [fq_near_d_i_end, fq_dis_section_i_mid]
 
                     # next section
                     fq_dis_d_section_list[i + 1] = [fq_near_d_section_i_next_end, ts_len]
@@ -528,8 +532,12 @@ def DQE_F1_section(tq_section_list, prediction_section_list, ts_len, gt_num=None
                         fq_dis_section_list[i] = [fq_near_d_i_end, tq_section_i_start]
                     else:
                         fq_dis_section_i_mid = (fq_near_d_i_end + tq_section_i_start) / 2
-                        fq_dis_d_section_list[i] = [fq_near_d_i_end, fq_dis_section_i_mid]
-                        fq_dis_e_section_list[i] = [fq_dis_section_i_mid, tq_section_i_start]
+                        # new
+                        # fq_dis_d_section_list[i] = [fq_near_d_i_end, fq_dis_section_i_mid]
+                        # fq_dis_e_section_list[i] = [fq_dis_section_i_mid, tq_section_i_start]
+                        # ori
+                        fq_dis_d_section_list[i] = [fq_dis_section_i_mid, tq_section_i_start]
+                        fq_dis_e_section_list[i] = [fq_near_d_i_end, fq_dis_section_i_mid]
                 if weight_fq_near_delay <= 0:
                     fq_near_d_section_list[i + 1] = [tq_section_i_end, tq_section_i_end]
                     if distant_method == "whole":
@@ -538,8 +546,12 @@ def DQE_F1_section(tq_section_list, prediction_section_list, ts_len, gt_num=None
                         fq_dis_section_list[i + 1] = [tq_section_i_end, ts_len]
                     else:
                         fq_dis_section_i_mid = (tq_section_i_last_end + fq_near_e_section_i_start) / 2
-                        fq_dis_d_section_list[i] = [tq_section_i_last_end, fq_dis_section_i_mid]
-                        fq_dis_e_section_list[i] = [fq_dis_section_i_mid, fq_near_e_section_i_start]
+                        # new
+                        # fq_dis_d_section_list[i] = [tq_section_i_last_end, fq_dis_section_i_mid]
+                        # fq_dis_e_section_list[i] = [fq_dis_section_i_mid, fq_near_e_section_i_start]
+                        # ori
+                        fq_dis_d_section_list[i] = [fq_dis_section_i_mid, fq_near_e_section_i_start]
+                        fq_dis_e_section_list[i] = [tq_section_i_last_end, fq_dis_section_i_mid]
 
                         # next section
                         fq_dis_d_section_list[i + 1] = [tq_section_i_end, ts_len]
@@ -565,8 +577,12 @@ def DQE_F1_section(tq_section_list, prediction_section_list, ts_len, gt_num=None
                     fq_dis_section_list[i] = [fq_near_d_i_end, fq_near_e_section_i_start]
                 else:
                     fq_dis_section_i_mid = (fq_near_d_i_end + fq_near_e_section_i_start) / 2
-                    fq_dis_d_section_list[i] = [fq_near_d_i_end, fq_dis_section_i_mid]
-                    fq_dis_e_section_list[i] = [fq_dis_section_i_mid, fq_near_e_section_i_start]
+                    # new
+                    # fq_dis_d_section_list[i] = [fq_near_d_i_end, fq_dis_section_i_mid]
+                    # fq_dis_e_section_list[i] = [fq_dis_section_i_mid, fq_near_e_section_i_start]
+                    # ori
+                    fq_dis_d_section_list[i] = [fq_dis_section_i_mid, fq_near_e_section_i_start]
+                    fq_dis_e_section_list[i] = [fq_near_d_i_end, fq_dis_section_i_mid]
 
                 # merge section
                 if weight_fq_near_early <= 0:
@@ -575,16 +591,24 @@ def DQE_F1_section(tq_section_list, prediction_section_list, ts_len, gt_num=None
                         fq_dis_section_list[i] = [fq_near_d_i_end, tq_section_i_start]
                     else:
                         fq_dis_section_i_mid = (fq_near_d_i_end + tq_section_i_start) / 2
-                        fq_dis_d_section_list[i] = [fq_near_d_i_end, fq_dis_section_i_mid]
-                        fq_dis_e_section_list[i] = [fq_dis_section_i_mid, tq_section_i_start]
+                        # new
+                        # fq_dis_d_section_list[i] = [fq_near_d_i_end, fq_dis_section_i_mid]
+                        # fq_dis_e_section_list[i] = [fq_dis_section_i_mid, tq_section_i_start]
+                        # ori
+                        fq_dis_d_section_list[i] = [fq_dis_section_i_mid, tq_section_i_start]
+                        fq_dis_e_section_list[i] = [fq_near_d_i_end, fq_dis_section_i_mid]
                 if weight_fq_near_delay <= 0:
                     fq_near_d_section_list[i + 1] = [tq_section_i_end, tq_section_i_end]
                     if distant_method == "whole":
                         fq_dis_section_list[i] = [tq_section_i_last_end, fq_near_e_section_i_start]
                     else:
                         fq_dis_section_i_mid = (tq_section_i_last_end + fq_near_e_section_i_start) / 2
-                        fq_dis_d_section_list[i] = [fq_dis_section_list[i][0], fq_dis_section_i_mid]
-                        fq_dis_e_section_list[i] = [fq_dis_section_i_mid, fq_dis_section_list[i][1]]
+                        # new
+                        # fq_dis_d_section_list[i] = [fq_dis_section_list[i][0], fq_dis_section_i_mid]
+                        # fq_dis_e_section_list[i] = [fq_dis_section_i_mid, fq_dis_section_list[i][1]]
+                        # ori
+                        fq_dis_d_section_list[i] = [fq_dis_section_i_mid, fq_dis_section_list[i][1]]
+                        fq_dis_e_section_list[i] = [fq_dis_section_list[i][0], fq_dis_section_i_mid]
 
             # add split line
             if weight_fq_near_early > 0:
@@ -1660,8 +1684,10 @@ def DQE(y_true, y_score, parameter_dict=parameter_dict, near_single_side_range=1
                     fq_dis_section_list[i + 1] = [fq_near_d_section_i_next_end, ts_len]
                 else:
                     fq_dis_section_i_mid = (fq_near_d_i_end + fq_near_e_section_i_start) / 2
-                    fq_dis_d_section_list[i] = [fq_near_d_i_end, fq_dis_section_i_mid]
-                    fq_dis_e_section_list[i] = [fq_dis_section_i_mid, fq_near_e_section_i_start]
+                    # fq_dis_d_section_list[i] = [fq_near_d_i_end, fq_dis_section_i_mid]
+                    # fq_dis_e_section_list[i] = [fq_dis_section_i_mid, fq_near_e_section_i_start]
+                    fq_dis_d_section_list[i] = [fq_dis_section_i_mid, fq_near_e_section_i_start]
+                    fq_dis_e_section_list[i] = [fq_near_d_i_end, fq_dis_section_i_mid]
 
                     # next section
                     fq_dis_d_section_list[i + 1] = [fq_near_d_section_i_next_end, ts_len]
@@ -1673,8 +1699,10 @@ def DQE(y_true, y_score, parameter_dict=parameter_dict, near_single_side_range=1
                         fq_dis_section_list[i] = [fq_near_d_i_end, tq_section_i_start]
                     else:
                         fq_dis_section_i_mid = (fq_near_d_i_end + tq_section_i_start) / 2
-                        fq_dis_d_section_list[i] = [fq_near_d_i_end, fq_dis_section_i_mid]
-                        fq_dis_e_section_list[i] = [fq_dis_section_i_mid, tq_section_i_start]
+                        # fq_dis_d_section_list[i] = [fq_near_d_i_end, fq_dis_section_i_mid]
+                        # fq_dis_e_section_list[i] = [fq_dis_section_i_mid, tq_section_i_start]
+                        fq_dis_d_section_list[i] = [fq_dis_section_i_mid, tq_section_i_start]
+                        fq_dis_e_section_list[i] = [fq_near_d_i_end, fq_dis_section_i_mid]
                 if weight_fq_near_delay <= 0:
                     fq_near_d_section_list[i + 1] = [tq_section_i_end, tq_section_i_end]
                     if distant_method == "whole":
@@ -1683,8 +1711,10 @@ def DQE(y_true, y_score, parameter_dict=parameter_dict, near_single_side_range=1
                         fq_dis_section_list[i + 1] = [tq_section_i_end, ts_len]
                     else:
                         fq_dis_section_i_mid = (tq_section_i_last_end + fq_near_e_section_i_start) / 2
-                        fq_dis_d_section_list[i] = [tq_section_i_last_end, fq_dis_section_i_mid]
-                        fq_dis_e_section_list[i] = [fq_dis_section_i_mid, fq_near_e_section_i_start]
+                        # fq_dis_d_section_list[i] = [tq_section_i_last_end, fq_dis_section_i_mid]
+                        # fq_dis_e_section_list[i] = [fq_dis_section_i_mid, fq_near_e_section_i_start]
+                        fq_dis_d_section_list[i] = [fq_dis_section_i_mid, fq_near_e_section_i_start]
+                        fq_dis_e_section_list[i] = [tq_section_i_last_end, fq_dis_section_i_mid]
 
                         # next section
                         fq_dis_d_section_list[i + 1] = [tq_section_i_end, ts_len]
@@ -1710,8 +1740,10 @@ def DQE(y_true, y_score, parameter_dict=parameter_dict, near_single_side_range=1
                     fq_dis_section_list[i] = [fq_near_d_i_end, fq_near_e_section_i_start]
                 else:
                     fq_dis_section_i_mid = (fq_near_d_i_end + fq_near_e_section_i_start) / 2
-                    fq_dis_d_section_list[i] = [fq_near_d_i_end, fq_dis_section_i_mid]
-                    fq_dis_e_section_list[i] = [fq_dis_section_i_mid, fq_near_e_section_i_start]
+                    # fq_dis_d_section_list[i] = [fq_near_d_i_end, fq_dis_section_i_mid]
+                    # fq_dis_e_section_list[i] = [fq_dis_section_i_mid, fq_near_e_section_i_start]
+                    fq_dis_d_section_list[i] = [fq_dis_section_i_mid, fq_near_e_section_i_start]
+                    fq_dis_e_section_list[i] = [fq_near_d_i_end, fq_dis_section_i_mid]
 
                 # merge section
                 if weight_fq_near_early <= 0:
@@ -1720,16 +1752,20 @@ def DQE(y_true, y_score, parameter_dict=parameter_dict, near_single_side_range=1
                         fq_dis_section_list[i] = [fq_near_d_i_end, tq_section_i_start]
                     else:
                         fq_dis_section_i_mid = (fq_near_d_i_end + tq_section_i_start) / 2
-                        fq_dis_d_section_list[i] = [fq_near_d_i_end, fq_dis_section_i_mid]
-                        fq_dis_e_section_list[i] = [fq_dis_section_i_mid, tq_section_i_start]
+                        # fq_dis_d_section_list[i] = [fq_near_d_i_end, fq_dis_section_i_mid]
+                        # fq_dis_e_section_list[i] = [fq_dis_section_i_mid, tq_section_i_start]
+                        fq_dis_d_section_list[i] = [fq_dis_section_i_mid, tq_section_i_start]
+                        fq_dis_e_section_list[i] = [fq_near_d_i_end, fq_dis_section_i_mid]
                 if weight_fq_near_delay <= 0:
                     fq_near_d_section_list[i + 1] = [tq_section_i_end, tq_section_i_end]
                     if distant_method == "whole":
                         fq_dis_section_list[i] = [tq_section_i_last_end, fq_near_e_section_i_start]
                     else:
                         fq_dis_section_i_mid = (tq_section_i_last_end + fq_near_e_section_i_start) / 2
-                        fq_dis_d_section_list[i] = [fq_dis_section_list[i][0], fq_dis_section_i_mid]
-                        fq_dis_e_section_list[i] = [fq_dis_section_i_mid, fq_dis_section_list[i][1]]
+                        # fq_dis_d_section_list[i] = [fq_dis_section_list[i][0], fq_dis_section_i_mid]
+                        # fq_dis_e_section_list[i] = [fq_dis_section_i_mid, fq_dis_section_list[i][1]]
+                        fq_dis_d_section_list[i] = [fq_dis_section_i_mid, fq_dis_section_list[i][1]]
+                        fq_dis_e_section_list[i] = [fq_dis_section_list[i][0], fq_dis_section_i_mid]
 
             # add split line
             if weight_fq_near_early > 0:
